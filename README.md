@@ -7,8 +7,6 @@ Designed for extreme speed, flexibility, and seamless multiplayer experience. Fe
 ---
 
 ## ✨ Key Features & Stack
-
-- 🚀 **Multi-Loader Support:** Official dynamic support for **Vanilla, Fabric, Quilt, NeoForge**, and **Forge** (all versions up to 1.21.4+).
 - 🧩 **Isolated Instance Environments:** Create separate game profiles with isolated `mods`, `config`, `saves`, and `resourcepacks` directories.
 - ⚙️ **Installed Mods Manager (Mod Control):** Enable, disable (`.disabled`), or delete installed mods directly inside the launcher without opening folders.
 - 🛍️ **Modrinth Manager (Mods, Shaders, Resourcepacks):** Live search with real-time mod icons, supported versions, and loader badges. Includes Enter-key fast search.
@@ -93,7 +91,3 @@ npm run dist:linux
 - RISC-V Electron builds are not official and must be configured via a custom `electronDist`.
 
 ---
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
