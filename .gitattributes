@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.ico binary
+*.icns binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+
+# Shell scripts (LF)
+*.sh text eol=lf
+*.iss text eol=crlf

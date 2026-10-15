@@ -1,30 +1,67 @@
 {
   "name": "devlauncher",
-  "version": "1.0.0",
-  "description": "A Minecraft Launcher",
+  "version": "0.12.1",
+  "description": "A minimal, high-performance Minecraft Launcher",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
-    "dist": "electron-builder --win"
+    "start": "ELECTRON_OZONE_PLATFORM_HINT=x11 electron .",
+    "dist": "electron-builder --win",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux",
+    "dist:linux:musl": "electron-builder --linux apk",
+    "dist:bsd": "electron-builder --linux freebsd",
+    "dist:all": "electron-builder -wml",
+    "build:inno": "iscc installer.iss"
   },
   "build": {
     "appId": "com.fedevoral.devlauncher",
     "productName": "devLauncher",
-    "win": {
-      "target": "dir",
-      "icon": "assets/icons/icon.ico"
-    },
     "directories": {
       "output": "dist"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64", "arm64", "ia32"] },
+        { "target": "zip", "arch": ["x64", "arm64", "ia32"] }
+      ],
+      "icon": "assets/icons/icon.ico"
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64", "universal"] },
+        { "target": "zip", "arch": ["x64", "arm64", "universal"] }
+      ],
+      "icon": "assets/icons/icon.png",
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64", "arm64", "armv7l"] },
+        { "target": "tar.gz", "arch": ["x64", "arm64", "armv7l"] },
+        { "target": "deb", "arch": ["x64", "arm64", "armv7l"] },
+        { "target": "rpm", "arch": ["x64", "arm64"] },
+        { "target": "pacman", "arch": ["x64", "arm64"] },
+        { "target": "apk", "arch": ["x64", "arm64", "armv7l"] },
+        { "target": "freebsd", "arch": ["x64"] }
+      ],
+      "icon": "assets/icons/icon.png",
+      "category": "Game"
     }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "minecraft",
+    "launcher",
+    "electron"
+  ],
+  "author": "fedevoral",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "minecraft-launcher-core": "^3.18.2"
+    "localtunnel": "^2.0.2",
+    "minecraft-launcher-core": "^3.18.2",
+    "msmc": "^5.0.5",
+    "peerjs": "^1.5.5"
   },
   "devDependencies": {
     "electron": "^42.5.0",

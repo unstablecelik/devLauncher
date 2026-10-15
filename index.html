@@ -5,410 +5,873 @@
     <title>devLauncher</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <style>
+    <style id="theme-style">
+        :root {
+            --bg-main: #2b2b36;
+            --bg-dark: #1e1e24;
+            --bg-bar: #141419;
+            --accent: #2ecc71;
+            --accent-hover: #34d076;
+            --text: #ffffff;
+            --text-muted: #a0a0b0;
+            --border: #3a3a4a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body { 
             margin: 0; 
             padding: 0; 
             font-family: 'JetBrains Mono', monospace; 
             height: 100vh; 
             display: flex; 
+            flex-direction: column;
             position: relative; 
             overflow: hidden; 
-            background-color: #2c2c2c;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            user-select: none;
+        }
+
+        /* Top Navigation Header */
+        .top-navbar {
+            height: 48px;
+            background-color: var(--bg-bar);
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        .navbar-brand {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-tab {
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            color: var(--text);
+            background-color: var(--bg-main);
+        }
+
+        .nav-tab.active {
+            color: var(--accent);
+            background-color: var(--bg-main);
+            border-color: var(--border);
+        }
+
+        /* Layout Container */
+        .content-container {
+            display: flex;
+            height: calc(100vh - 168px);
+            position: relative;
         }
         
-        .main-content {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .tab-content {
+            display: none;
             width: 80%;
-            height: calc(100vh - 120px);
-            background-color: #d1d1d1;
-            padding: 40px;
-            box-sizing: border-box;
+            height: 100%;
+            background-color: var(--bg-main);
+            padding: 30px 35px;
             overflow-y: auto;
         }
 
-        .main-content h1 {
-            color: #1a9453;
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h1 {
+            color: var(--accent);
             margin-top: 0;
-            font-size: 28px;
+            font-size: 24px;
         }
 
-        .main-content h2 {
-            color: #333;
-            font-size: 20px;
-            margin-top: 30px;
+        .tab-content h2 {
+            color: var(--text);
+            font-size: 17px;
+            margin-top: 22px;
         }
 
-        .main-content p {
-            color: #444;
-            font-size: 15px;
+        .tab-content p {
+            color: var(--text-muted);
+            font-size: 13px;
             line-height: 1.6;
-            max-width: 800px;
+            max-width: 850px;
         }
 
         .side-panel {
-            position: absolute;
-            top: 0;
-            right: 0;
             width: 20%;
-            height: calc(100vh - 120px);
-            background-color: #1a9453;
+            height: 100%;
+            background-color: var(--bg-dark);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 40px;
-            box-sizing: border-box;
-            border-left: 4px solid #13733f;
+            padding: 25px 15px 0 15px;
+            border-left: 2px solid var(--border);
+            gap: 14px;
         }
 
         .github-btn {
             background-color: #24292e;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
+            color: #ffffff;
+            border: 1px solid #3a3f45;
+            padding: 10px 16px;
+            font-size: 12.5px;
+            font-weight: 700;
+            border-radius: 6px;
             cursor: pointer;
             font-family: 'JetBrains Mono', monospace;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: 0.2s;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s, transform 0.1s, border-color 0.2s;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .github-btn:hover {
             background-color: #2f363d;
+            border-color: var(--accent);
             transform: translateY(-2px);
         }
 
         .launcher-desc {
-            color: #e0e0e0;
-            font-size: 12px;
-            margin-top: 15px;
+            color: var(--text-muted);
+            font-size: 11px;
             text-align: center;
-            padding: 0 10px;
-            line-height: 1.4;
+            line-height: 1.5;
+        }
+
+        .instance-badge {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            width: 100%;
+            text-align: left;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .instance-badge-title {
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .instance-badge-path {
+            color: var(--text);
+            word-break: break-all;
+            font-size: 11px;
         }
         
+        /* Bottom Control Bar */
         .bottom-bar { 
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 120px; 
+            background-color: var(--bg-bar);
             background-image: url('assets/banner/banner.png');
             background-repeat: repeat-x;
             background-size: auto 100%;
             display: flex; 
             align-items: center; 
             justify-content: space-between;
-            padding: 0 40px; 
-            box-sizing: border-box;
+            padding: 0 35px; 
             z-index: 5;
+            border-top: 2px solid var(--border);
         }
 
         .left-controls {
             display: flex;
-            gap: 15px;
-            align-items: flex-start;
+            gap: 18px;
+            align-items: center;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 6px;
+            align-items: flex-start;
+        }
+
+        .label-container {
+            display: flex;
             align-items: center;
         }
-        
-        .user-input, .select-wrapper select { 
-            padding: 10px 15px; 
-            font-size: 14px; 
-            border: none; 
-            border-radius: 4px; 
-            width: 160px; 
-            background-color: #b5b5b5;
-            color: #222; 
-            font-family: 'JetBrains Mono', monospace;
-            box-sizing: border-box;
-        }
-        .user-input::placeholder { color: #555; }
-        .user-input:focus, .select-wrapper select:focus { outline: 2px solid #f9b837; }
 
-        /* Kategori başlıklarının (optgroup) stili */
-        .select-wrapper select optgroup {
-            background-color: #2c2c2c;
-            color: #f9b837;
-            font-weight: bold;
-            font-family: 'JetBrains Mono', monospace;
+        .label-text { 
+            font-size: 12px; 
+            color: var(--text-muted);
+            font-weight: 500;
         }
+
+        .account-btn-trigger {
+            padding: 10px 14px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 180px;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: border-color 0.2s;
+        }
+
+        .account-btn-trigger:hover {
+            border-color: var(--accent);
+        }
+        
+        .select-wrapper select { 
+            padding: 10px 14px; 
+            font-size: 13px; 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            width: 185px; 
+            background-color: var(--bg-dark);
+            color: var(--text); 
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .select-wrapper select optgroup {
+            background-color: var(--bg-dark);
+            color: var(--accent);
+            font-weight: bold;
+        }
+
         .select-wrapper select option {
-            background-color: #b5b5b5;
-            color: #222;
+            background-color: var(--bg-main);
+            color: var(--text);
         }
 
         .select-wrapper {
             position: relative;
             display: inline-block;
         }
+
         .select-wrapper::after {
             content: '▼';
-            font-size: 10px;
-            color: #333;
-            background-color: #9e9e9e;
+            font-size: 9px;
+            color: var(--text-muted);
             position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             pointer-events: none;
         }
 
-        .label-text { 
-            font-size: 13px; 
-            color: white;
-            text-align: center;
-            width: 100%;
-        }
-        
         .play-btn { 
-            background-color: #f9b837; 
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
             border: none; 
-            width: 240px;
+            width: 210px;
             height: 52px;
-            font-size: 20px; 
-            font-weight: bold; 
-            color: white; 
-            border-radius: 16px; 
+            font-size: 17px; 
+            font-weight: 700; 
+            color: #ffffff; 
+            border-radius: 8px; 
             cursor: pointer; 
             font-family: 'JetBrains Mono', monospace;
-            transition: 0.2s; 
+            transition: all 0.2s ease; 
             letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
-        .play-btn:hover { background-color: #e5a426; transform: scale(1.02); }
-        .play-btn:disabled { background-color: #555 !important; color: #aaa; cursor: not-allowed; }
+
+        .play-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .play-btn:disabled { 
+            background: var(--border) !important; 
+            color: var(--text-muted) !important; 
+            cursor: not-allowed; 
+            transform: none !important;
+            box-shadow: none !important;
+        }
 
         .right-icons { 
             display: flex; 
-            gap: 24px; 
-        }
-        .right-icons img { 
-            width: 28px; 
-            height: 28px; 
-            cursor: pointer; 
-            transition: transform 0.2s;
-            filter: brightness(0) invert(1);
-        }
-        .right-icons img:hover { 
-            transform: scale(1.1); 
+            gap: 10px; 
+            align-items: center;
         }
 
-        #settings-modal { display: none; position: absolute; top: 20%; left: 50%; transform: translate(-50%, -20%); background: #25252b; padding: 20px; border-radius: 8px; width: 320px; color: white; box-shadow: 0px 10px 25px rgba(0,0,0,0.6); border: 1px solid #3e3e4a; z-index: 20; }
-        .settings-row { display: flex; flex-direction: column; margin-bottom: 15px; }
-        .settings-row input { padding: 8px; margin-top: 5px; border-radius: 3px; border: none; background: #32323c; color: white; font-family: 'JetBrains Mono', monospace; }
-        .close-btn { background: #d9534f; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; font-weight: bold; }
+        .icon-btn {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-main);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .icon-btn img { 
+            width: 20px; 
+            height: 20px; 
+            filter: brightness(0) invert(0.9);
+        }
+
+        /* Modals */
+        .modal { 
+            display: none; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: var(--bg-dark); 
+            padding: 24px; 
+            border-radius: 10px; 
+            width: 460px; 
+            color: var(--text); 
+            box-shadow: 0px 15px 35px rgba(0,0,0,0.8); 
+            border: 1px solid var(--border); 
+            z-index: 30; 
+        }
+
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .form-row { 
+            display: flex; 
+            flex-direction: column; 
+            margin-bottom: 14px; 
+        }
+
+        .form-row label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-row input, .form-row select { 
+            padding: 10px; 
+            border-radius: 6px; 
+            border: 1px solid var(--border); 
+            background: var(--bg-main); 
+            color: var(--text); 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 13px;
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-main);
+            border-color: var(--accent);
+        }
+
+        .ms-login-btn {
+            background-color: #00a4ef;
+            border: none;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .ms-login-btn:hover {
+            opacity: 0.9;
+        }
+
+        .close-btn { 
+            background: #e74c3c; 
+            color: #ffffff; 
+            border: none; 
+            padding: 11px; 
+            cursor: pointer; 
+            width: 100%; 
+            border-radius: 6px; 
+            font-weight: 700; 
+            font-family: 'JetBrains Mono', monospace;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .close-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Mod Browser styling */
+        .mod-search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mod-search-bar input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .type-sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .sub-tab-btn {
+            padding: 6px 12px;
+            font-size: 11.5px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--accent);
+            color: #141419;
+            font-weight: bold;
+        }
+
+        .mod-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .mod-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mod-info h4 {
+            margin: 0 0 6px 0;
+            color: var(--accent);
+        }
+
+        .mod-info p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Instance Manager & Screenshots Grid */
+        .instance-list, .screenshots-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .screenshot-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .instance-item-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .theme-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theme-card:hover {
+            border-color: var(--accent);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.6);
+            z-index: 25;
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-content">
-        <h1>Performance Boost 1.21.1 Mod by fedevoral</h1>
-        <p>
-            Experience ultimate gameplay with the custom performance modification layer built specifically for version 1.21.1. This optimization bundle significantly enhances frame rates, reduces memory overhead, and eliminates micro-stutters by tuning the internal engine rendering. Completely configured and maintained by <strong>fedevoral</strong>.
-        </p>
-
-        <h2>Minecraft 1.21.8 Vanilla Support</h2>
-        <p>
-            I have official deployment and integration for the latest Vanilla 1.21.8 release. This update focuses heavily on system stability, critical engine optimizations, and essential multiplayer security patches. It completely resolves major crashes related to Realms connectivity, improves world loading performance, and refines the item management mechanics of Bundles to deliver a flawless, ultra-smooth vanilla experience.
-        </p>
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <div class="navbar-brand">
+            🚀 devLauncher
+        </div>
+        <div class="navbar-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard-tab', this)">Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('modrinth-tab', this)">Mod Manager</button>
+            <button class="nav-tab" onclick="switchTab('instances-tab', this)">Instances</button>
+            <button class="nav-tab" onclick="switchTab('screenshots-tab', this)">Screenshots</button>
+            <button class="nav-tab" onclick="openThemeModal()">🎨 Themes</button>
+        </div>
     </div>
 
-    <div class="side-panel">
-        <button class="github-btn" id="github-link">
-            <svg height="24" width="24" viewBox="0 0 16 16" fill="white">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
-            GitHub
-        </button>
-        <div class="launcher-desc">A minimal Minecraft Launcher made by fedevoral, a 15 yo. developer.</div>
+    <!-- Main Content Area -->
+    <div class="content-container">
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard-tab">
+            <h1>Minecraft 26.3 Major Update Support</h1>
+            <p>
+                devLauncher fully integrates official support for the upcoming <strong>Minecraft 26.3</strong> release. This engine update introduces next-generation multithreaded chunk rendering, dynamic lighting overhaul, acoustics, and native OpenJDK optimizations.
+            </p>
+
+            <h2>devLauncher 2.0 Feature Stack</h2>
+            <p>
+                Welcome to devLauncher 2.0! Featuring <strong>isolated instance environments</strong>, persistent multi-account session management, <strong>Modrinth Mod/Shader/Resourcepack Manager</strong>, 1-Click <strong>Performance Modpack installer</strong>, <strong>Screenshot Zip Export</strong>, <strong>Discord Rich Presence</strong>, full <strong>Theme Store</strong> (Catppuccin, Nord, OLED Black, Dracula), and <strong>ZGC Zero-Stutter Garbage Collector Tuning</strong>.
+            </p>
+        </div>
+
+        <!-- Modrinth Mod Browser Tab -->
+        <div class="tab-content" id="modrinth-tab">
+            <h1>Modrinth Manager</h1>
+            <p>Browse and install mods, resource packs, and shaders directly into your active instance.</p>
+
+            <div class="type-sub-tabs">
+                <button class="sub-tab-btn active" onclick="selectModrinthCategory('mod', this)">Mods</button>
+                <button class="sub-tab-btn" onclick="selectModrinthCategory('resourcepack', this)">Resource Packs</button>
+                <button class="sub-tab-btn" onclick="selectModrinthCategory('shader', this)">Shaders</button>
+            </div>
+
+            <div class="mod-search-bar">
+                <input type="text" id="mod-search-input" placeholder="Search (e.g. Sodium, Complementary, Bare Bones)...">
+                <button class="btn-secondary" id="mod-search-btn">Search</button>
+            </div>
+
+            <div class="mod-grid" id="mod-results-container">
+                <div style="color: var(--text-muted); font-size: 13px;">Enter a query above to search Modrinth.</div>
+            </div>
+        </div>
+
+        <!-- Instance Manager Tab -->
+        <div class="tab-content" id="instances-tab">
+            <h1>Instance Manager</h1>
+            <p>Manage isolated Minecraft instances with custom mod loaders, RAM allocations, and performance packs.</p>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button class="btn-secondary" onclick="openCreateInstanceModal()">+ Create New Instance</button>
+                <button class="btn-secondary" id="install-perf-pack-btn">⚡ 1-Click Performance Pack</button>
+                <button class="btn-secondary" id="export-instance-zip-btn">Export Active Instance (.zip)</button>
+            </div>
+
+            <div class="instance-list" id="instances-container">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Screenshots Manager Tab -->
+        <div class="tab-content" id="screenshots-tab">
+            <h1>Screenshots Manager</h1>
+            <p>View game screenshots captured in your active instance and export them as a compressed .zip file.</p>
+
+            <button class="btn-secondary" id="export-screenshots-zip-btn" style="margin-bottom: 15px;">Export All Screenshots (.zip)</button>
+
+            <div class="screenshots-grid" id="screenshots-container">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Right Side Panel -->
+        <div class="side-panel">
+            <button class="github-btn" id="github-link">
+                <svg height="18" width="18" viewBox="0 0 16 16" fill="white">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                GitHub
+            </button>
+
+            <div class="instance-badge">
+                <div class="instance-badge-title">Active Instance</div>
+                <div class="instance-badge-path" id="instance-path-text">default</div>
+            </div>
+
+            <div class="launcher-desc">A minimal, high-performance Minecraft Launcher by fedevoral.</div>
+        </div>
     </div>
 
-    <div id="settings-modal">
-        <h3 style="margin-top: 0; color: #f9b837;">Settings</h3>
-        <div class="settings-row">
-            <div class="label-text" style="text-align: left; margin-bottom: 5px;">Java Exe Path:</div>
-            <input type="text" id="java-path" value="C:\Program Files\Java\jdk-21\bin\java.exe">
-        </div>
-        <div class="settings-row">
-            <div class="label-text" style="text-align: left; margin-bottom: 5px;">Min RAM (e.g., 2G):</div>
-            <input type="text" id="min-ram" value="4G">
-        </div>
-        <div class="settings-row">
-            <div class="label-text" style="text-align: left; margin-bottom: 5px;">Max RAM (e.g., 8G):</div>
-            <input type="text" id="max-ram" value="8G">
-        </div>
-        <button class="close-btn" onclick="toggleSettings()">Close & Save</button>
-    </div>
+    <!-- Modal Backdrop -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeAllModals()"></div>
 
-    <div class="bottom-bar">
+    <!-- Account Selection Modal -->
+    <div class="modal" id="account-modal">
+        <h3 class="modal-title">Account & Identity</h3>
         
+        <div class="form-row">
+            <label>Online Mode (Official / Hypixel Support)</label>
+            <button class="ms-login-btn" id="ms-login-btn">
+                <span>Sign in with Microsoft</span>
+            </button>
+        </div>
+
+        <div style="text-align: center; color: var(--text-muted); margin: 12px 0; font-size: 11px;">— OR OFFLINE MODE —</div>
+
+        <div class="form-row">
+            <label for="offline-username-input">Offline Username</label>
+            <input type="text" id="offline-username-input" value="fedevoral" placeholder="Enter offline nickname">
+        </div>
+
+        <div class="form-row">
+            <label>Custom Skin (.png)</label>
+            <button class="btn-secondary" id="select-skin-btn">Upload Custom Skin</button>
+            <div id="skin-path-display" style="font-size: 10px; color: var(--text-muted); margin-top: 4px; word-break: break-all;">No skin uploaded</div>
+        </div>
+
+        <button class="close-btn" onclick="closeAllModals()">Save Account Settings</button>
+    </div>
+
+    <!-- Theme Store Modal -->
+    <div class="modal" id="theme-modal">
+        <h3 class="modal-title">Theme Store</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Select a color scheme to customize devLauncher's appearance.</p>
+
+        <div class="theme-grid" id="theme-grid-container">
+            <!-- Dynamically populated -->
+        </div>
+
+        <button class="close-btn" onclick="closeAllModals()">Done</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <h3 class="modal-title">Launcher & Garbage Collector Settings</h3>
+
+        <div class="form-row">
+            <label for="gc-mode-select">Garbage Collector Engine (Performance Tuning)</label>
+            <select id="gc-mode-select">
+                <option value="g1gc">Aikar G1GC Tuning (Standard Boost)</option>
+                <option value="zgc">ZGC (Zero-Stutter Low-Latency GC &lt;1ms Pause)</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="java-select">Detected Java Runtimes (Linux OpenJDK / System)</label>
+            <select id="java-select">
+                <option value="">System Default Java</option>
+            </select>
+            <button class="btn-secondary" id="detect-java-btn" style="margin-top: 6px;">Auto-Detect Java</button>
+        </div>
+
+        <div class="form-row">
+            <label for="java-path">Custom Java Executable Path</label>
+            <input type="text" id="java-path" value="">
+        </div>
+
+        <div class="form-row">
+            <label for="min-ram">Minimum RAM (e.g., 2G)</label>
+            <input type="text" id="min-ram" value="2G">
+        </div>
+
+        <div class="form-row">
+            <label for="max-ram">Maximum RAM (e.g., 4G)</label>
+            <input type="text" id="max-ram" value="4G">
+        </div>
+
+        <div class="form-row">
+            <label for="custom-jvm-args">Custom JVM Arguments</label>
+            <input type="text" id="custom-jvm-args" placeholder="-XX:+UseG1GC ...">
+        </div>
+
+        <div class="form-row">
+            <label for="discord-client-id">Discord Application Client ID (Optional)</label>
+            <input type="text" id="discord-client-id" placeholder="1342000000000000000">
+        </div>
+
+        <button class="close-btn" onclick="closeAllModals()">Save Settings</button>
+    </div>
+
+    <!-- Create Instance Modal -->
+    <div class="modal" id="create-instance-modal">
+        <h3 class="modal-title">Create Instance</h3>
+
+        <div class="form-row">
+            <label for="new-instance-name">Instance Name</label>
+            <input type="text" id="new-instance-name" placeholder="My Instance">
+        </div>
+
+        <div class="form-row">
+            <label for="new-instance-version">Minecraft Version</label>
+            <select id="new-instance-version">
+                <option value="1.21.1">1.21.1</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="new-instance-loader">Mod Loader</label>
+            <select id="new-instance-loader">
+                <option value="vanilla">Vanilla</option>
+                <option value="fabric">Fabric</option>
+                <option value="forge">Forge</option>
+            </select>
+        </div>
+
+        <button class="btn-secondary" id="submit-create-instance-btn" style="width: 100%;">Create Instance</button>
+        <button class="close-btn" onclick="closeAllModals()">Cancel</button>
+    </div>
+
+    <!-- Bottom Bar Controls -->
+    <div class="bottom-bar">
         <div class="left-controls">
             <div class="input-group">
-                <input type="text" id="username" class="user-input" value="fedevoral" placeholder="Username">
-                <div class="label-text">Accounts</div>
+                <div class="label-container">
+                    <span class="label-text">Account</span>
+                </div>
+                <button class="account-btn-trigger" id="account-btn-trigger" onclick="openAccountModal()">
+                    fedevoral
+                </button>
             </div>
             <div class="input-group">
+                <div class="label-container">
+                    <span class="label-text">Version</span>
+                </div>
                 <div class="select-wrapper">
                     <select id="version">
-                        <option value="fabric-loader-0.19.3-1.21.1">Loading versions...</option>
+                        <option value="1.21.1">Loading versions...</option>
                     </select>
                 </div>
-                <div class="label-text">Select version</div>
             </div>
         </div>
 
         <button class="play-btn" id="play-btn">PLAY</button>
 
         <div class="right-icons">
-            <img src="assets/icons/refresh.png" id="refresh-btn" title="Refresh">
-            <img src="assets/icons/folder.png" id="folder-btn" title="Open Mods Folder">
-            <img src="assets/icons/settings.png" id="settings-btn" title="Settings" onclick="toggleSettings()">
+            <button class="icon-btn" id="refresh-btn" title="Refresh Versions">
+                <img src="assets/icons/refresh.png" alt="Refresh">
+            </button>
+            <button class="icon-btn" id="folder-btn" title="Open Instance Mods Folder">
+                <img src="assets/icons/folder.png" alt="Folder">
+            </button>
+            <button class="icon-btn" id="settings-btn" title="Settings" onclick="openSettingsModal()">
+                <img src="assets/icons/settings.png" alt="Settings">
+            </button>
         </div>
-
     </div>
 
-    <script>
-        const { ipcRenderer, shell } = require('electron');
-
-        document.addEventListener('DOMContentLoaded', () => {
-            ipcRenderer.send('get-versions');
-        });
-
-        ipcRenderer.on('versions-list', (event, data) => {
-            const versionSelect = document.getElementById('version');
-            versionSelect.innerHTML = ''; 
-
-            const specialOptgroup = document.createElement('optgroup');
-            specialOptgroup.label = "✨ Special Profile";
-            
-            const fabricSpecial = document.createElement('option');
-            fabricSpecial.value = `fabric-loader-${data.fabricLoader}-1.21.1`;
-            fabricSpecial.innerText = 'Fabric 1.21.1 (Performance Boost)';
-            fabricSpecial.selected = true; 
-            specialOptgroup.appendChild(fabricSpecial);
-            versionSelect.appendChild(specialOptgroup);
-
-            const vanillaOptgroup = document.createElement('optgroup');
-            vanillaOptgroup.label = "📦 Vanilla Releases";
-            data.vanilla.forEach(v => {
-                const option = document.createElement('option');
-                option.value = v;
-                option.innerText = `Vanilla ${v}`;
-                vanillaOptgroup.appendChild(option);
-            });
-            versionSelect.appendChild(vanillaOptgroup);
-
-            const forgeOptgroup = document.createElement('optgroup');
-            forgeOptgroup.label = "🛠️ Forge Loader";
-            const popularForge = ['1.20.1', '1.19.2', '1.18.2', '1.16.5', '1.12.2'];
-            data.vanilla.forEach(v => {
-                if (popularForge.includes(v) || v.startsWith('1.21')) {
-                    const option = document.createElement('option');
-                    option.value = `forge-${v}`;
-                    option.innerText = `Forge ${v}`;
-                    forgeOptgroup.appendChild(option);
-                }
-            });
-            versionSelect.appendChild(forgeOptgroup);
-
-            const optifineOptgroup = document.createElement('optgroup');
-            optifineOptgroup.label = "🔍 Optifine Profiles";
-            const popularOptifine = ['1.21.1', '1.20.1', '1.19.2', '1.16.5', '1.8.9'];
-            data.vanilla.forEach(v => {
-                if (popularOptifine.includes(v)) {
-                    const option = document.createElement('option');
-                    option.value = `optifine-${v}`;
-                    option.innerText = `Optifine ${v}`;
-                    optifineOptgroup.appendChild(option);
-                }
-            });
-            versionSelect.appendChild(optifineOptgroup);
-
-            const fabricOptgroup = document.createElement('optgroup');
-            fabricOptgroup.label = "🧬 Fabric Loader";
-            data.vanilla.forEach(v => {
-                if (parseFloat(v.substring(2)) >= 14 || v.startsWith('1.21')) {
-                    const option = document.createElement('option');
-                    option.value = `fabric-loader-${data.fabricLoader}-${v}`;
-                    option.innerText = `Fabric ${v}`;
-                    fabricOptgroup.appendChild(option);
-                }
-            });
-            versionSelect.appendChild(fabricOptgroup);
-        });
-
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
-
-        document.getElementById('folder-btn').addEventListener('click', () => {
-            ipcRenderer.send('open-mods-folder');
-        });
-
-        document.getElementById('github-link').addEventListener('click', () => {
-            shell.openExternal('https://github.com/fedevoral/devLauncher'); 
-        }); 
-
-        document.getElementById('play-btn').addEventListener('click', function() {
-            this.innerText = "DOWNLOADING... %0";
-            this.disabled = true;
-
-            const config = {
-                username: document.getElementById('username').value,
-                version: document.getElementById('version').value,
-                javaPath: document.getElementById('java-path').value,
-                minRam: document.getElementById('min-ram').value,
-                maxRam: document.getElementById('max-ram').value
-            };
-            ipcRenderer.send('launch-game', config);
-        });
-
-        ipcRenderer.on('download-progress', (event, data) => {
-            const playBtn = document.getElementById('play-btn');
-            if (data.type === 'progress') {
-                let percent = Math.round((data.current / data.total) * 100);
-                playBtn.innerText = `DOWNLOADING... %${percent}`;
-            } else if (data.type === 'extract') {
-                playBtn.innerText = "EXTRACTING...";
-            }
-        });
-
-        ipcRenderer.on('game-launched', () => {
-            const playBtn = document.getElementById('play-btn');
-            playBtn.innerText = "PLAYING";
-        });
-
-        ipcRenderer.on('game-closed', () => {
-            const playBtn = document.getElementById('play-btn');
-            playBtn.innerText = "PLAY";
-            playBtn.disabled = false;
-        });
-    </script>
+    <script src="renderer.js"></script>
 </body>
 </html>
