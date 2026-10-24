@@ -4,8 +4,6 @@ A next-generation, high-performance, open-source Minecraft Launcher built with E
 
 Designed for extreme speed, flexibility, and seamless multiplayer experience. Features native support for **Vanilla, Fabric, Quilt, NeoForge, and Forge** with isolated instances and built-in P2P world sharing.
 
-![devLauncher banner](docs/banner.svg)
-
 > Download the latest build at the [project website](https://github.com/unstablecelik/devLauncher#readme) or from [Releases](https://github.com/unstablecelik/devLauncher/releases/latest).
 
 ---

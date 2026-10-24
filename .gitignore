@@ -35,6 +35,12 @@ builder-effective-config.yaml
 auth.json
 credentials.json
 
+# ── AI-assist artifacts, local helpers, generated promo ─────────────────────
+FIXES-REPORT.md
+ROADMAP-REPORT.md
+start.sh
+docs/banner.svg
+
 # Operating System Files
 .DS_Store
 Thumbs.db
