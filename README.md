@@ -83,7 +83,7 @@ npm run dist:linux
 
 | OS | Architectures | Formats / notes |
 |---|---|---|
-| Windows 10/11 | x64, arm64, ia32 (32-bit x86) | NSIS + portable `.zip` |
+| Windows 10/11 | x64, ia32 (32-bit x86) | Inno Setup installer (per-user, no admin) + portable `.zip` |
 | macOS 11+ (Big Sur+) | x64 (Intel), arm64 (Apple Silicon), universal | `.dmg` + `.zip`. Universal bundles run on both. |
 | Linux (glibc) | x64, arm64, armv7l (32-bit ARM) | AppImage, `.deb`, `.rpm`, `.tar.gz`, pacman, apk. Distro families: Debian/Ubuntu/Mint, Fedora/RHEL/openSUSE, Arch/Manjaro, Gentoo and other glibc-based distros. |
 
@@ -96,6 +96,7 @@ npm run dist:linux
 | OS / stack | Architectures | Notes |
 |---|---|---|
 | Linux (musl) | x64, arm64, armv7l | Alpine (and Void musl best-effort). Uses `apk`/`.tar.gz`. May need system libraries. |
+| FreeBSD | x64 | System Electron from ports (`pkg install electron42`), run with `freebsd-run.sh`. See [`docs/BSD.md`](docs/BSD.md). |
 | FreeBSD | x64 | Uses `freebsd` target + the FreeBSD Electron port; Java auto-installer is disabled, install Temurin/OpenJDK via `pkg`. |
 | OpenBSD / NetBSD | x64 | Java detector reuses BSD search paths; Electron packaging is community-only. |
 | Linux (glibc, RISC-V) | riscv64 | Requires a community RISC-V Electron build (`electron-riscv`); not produced by the standard builder. Temurin riscv64 can be auto-installed. |

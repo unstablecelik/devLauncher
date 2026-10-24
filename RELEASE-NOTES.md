@@ -1,10 +1,10 @@
 # devLauncher v0.13.0
 
-The biggest release yet: 20 new features across four phases, plus three hardening phases (modal/networking/instance rewrites) — verified by the in-repo test suite (`npm test`, 100+ assertions across 4 suites).
+The biggest release yet: 20 new features across four phases, plus three hardening phases (modal/networking/instance rewrites) — verified by the in-repo test suite (`npm test`, 119 assertions across 6 suites).
 
 ## Highlights
 
-- **Self-Update**: seamless updates on AppImage / NSIS / DMG with `latest*.yml` + blockmap artifacts.
+- **Self-Update**: self-hosted update pipeline for every packaging shape — Inno Setup (Windows, silent + Restart Manager relaunch), portable zip (in-place wait-and-swap), AppImage/DMG dist profiles. Downloads are sha256-verified against the release `SHA256SUMS` and honour the network proxy settings.
 - **Mod Update Checker + Update All**: every installed jar is identified by its sha1 on Modrinth and can be updated in place with hash verification — and everything lands in the Time Machine for one-click undo.
 - **Share Code**: export an instance + its whole mod list as a single `DL13-…` code; the receiver gets a fresh instance with every Modrinth mod automatically downloaded and verified.
 - **1-Click Server**: turn an instance into a runnable dedicated server folder (server jar, mods, eula.txt, start.sh / start.bat).

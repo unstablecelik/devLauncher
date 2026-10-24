@@ -40,6 +40,20 @@ const RemotePlayService = require('./src/services/remotePlayService');
 const crypto = require('crypto');
 const netClient = require('./src/services/netClient');
 
+// ── Portable / USB-stick mode ───────────────────────────────────────────────
+// A `portable.marker` file next to the launcher exe switches all settings,
+// cache and instance storage into ./data beside it. Nothing is written to
+// %APPDATA% — counterpart for school/lab PCs and USB sticks. Must run before
+// the single-instance lock and every service reads its storage path.
+try {
+    if (process.platform === 'win32' && app.isPackaged) {
+        const exeDir = path.dirname(app.getPath('exe'));
+        if (fs.existsSync(path.join(exeDir, 'portable.marker'))) {
+            app.setPath('userData', path.join(exeDir, 'data'));
+        }
+    }
+} catch (_) { /* fall back to the stock userData path */ }
+
 // Wire the launcher's entire networking through netClient: split between
 // Electron's session (Chromium paths) and the Node https stack (tunneling
 // agent). Honoured at startup and whenever the proxy settings change.
@@ -1218,7 +1232,35 @@ ipcMain.on('get-lan-info', (event) => {
             if (n.family === 'IPv4' && !n.internal) ips.push(n.address);
         }
     }
-    event.reply('lan-info', { ok: true, ips });
+    const room = p2pService.getActiveRoom();
+    event.reply('lan-info', { ok: true, ips, port: room ? room.port : 25565 });
+});
+
+// ── LAN peer reachability: can this PC open a TCP socket to host:port? ──────
+// Direct same-network answer for the two-computer setup: no tunnel involved,
+// the result is the plain truth about 25565 being open on the other machine.
+ipcMain.handle('lan-peer-test', async (event, target) => {
+    const nodeNet = require('net');
+    const host = String((target && target.host) || '').trim();
+    const port = parseInt(target && target.port, 10);
+    if (!/^[A-Za-z0-9._-]{1,253}$/.test(host) || !(Number.isInteger(port) && port >= 1 && port <= 65535)) {
+        return { ok: false, error: 'invalid host or port' };
+    }
+    return new Promise((resolve) => {
+        const started = Date.now();
+        const socket = nodeNet.connect({ host, port });
+        const finish = (result) => {
+            try { socket.destroy(); } catch (_) {}
+            resolve(result);
+        };
+        socket.setTimeout(4000);
+        socket.once('connect', () => finish({ ok: true, ms: Date.now() - started }));
+        socket.once('timeout', () => finish({ ok: false, error: 'timeout' }));
+        socket.once('error', (err) => finish({
+            ok: false,
+            error: err.code === 'ECONNREFUSED' ? 'refused (host reachable, port closed)' : (err.code || 'unreachable')
+        }));
+    });
 });
 
 // ── UI prefs & About ─────────────────────────────────────────────────────────
@@ -1232,7 +1274,8 @@ ipcMain.handle('get-app-info', () => ({
     version: app.getVersion(),
     electron: process.versions.electron,
     node: process.versions.node,
-    platform: process.platform
+    platform: process.platform,
+    updateMode: updater.mode
 }));
 
 // ── Connectivity Doctor ─────────────────────────────────────────────────────

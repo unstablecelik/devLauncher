@@ -13,7 +13,8 @@
     "dist:linux:musl": "electron-builder --linux apk",
     "dist:bsd": "electron-builder --linux freebsd",
     "dist:all": "electron-builder -wml",
-    "build:inno": "iscc installer.iss"
+    "build:inno": "iscc installer.iss",
+    "build:inno:wine": "wine \"C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe\" installer.iss"
   },
   "build": {
     "appId": "com.unstablecelik.devlauncher",
@@ -31,25 +32,18 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "arm64",
-            "ia32"
-          ]
-        },
-        {
           "target": "zip",
           "arch": [
             "x64",
-            "arm64",
             "ia32"
           ]
         }
       ],
       "icon": "assets/icons/icon.ico",
       "signtoolOptions": {
-        "signingHashAlgorithms": ["sha256"],
+        "signingHashAlgorithms": [
+          "sha256"
+        ],
         "rfc3161TimeStampServer": "http://timestamp.digicert.com"
       }
     },
@@ -144,12 +138,11 @@
     "launcher",
     "electron"
   ],
-  "author": "fedevoral",
+  "author": "unstablecelik",
   "license": "GPL-3.0-only",
   "type": "commonjs",
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "electron-updater": "^6.8.9",
     "localtunnel": "^2.0.2",
     "minecraft-launcher-core": "^3.18.2",
     "msmc": "^5.0.5",

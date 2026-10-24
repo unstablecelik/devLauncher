@@ -1,13 +1,13 @@
 pkgname=devlauncher-git
-pkgver=0.12.6
+pkgver=0.13.0
 pkgrel=1
 pkgdesc="A minimal open-source Minecraft launcher built with Electron"
 arch=('x86_64')
-url="https://github.com/fedevoral/devLauncher"
-license=('MIT')
+url="https://github.com/unstablecelik/devLauncher"
+license=('GPL-3.0-only')
 depends=('nodejs' 'java-runtime=21')
 makedepends=('git' 'npm')
-source=("git+https://github.com/fedevoral/devLauncher.git")
+source=("git+https://github.com/unstablecelik/devLauncher.git")
 sha256sums=('SKIP')
 
 build() {

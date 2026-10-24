@@ -38,7 +38,7 @@ function initEventListeners() {
     document.getElementById('play-btn').addEventListener('click', () => handleLaunch(false));
     document.getElementById('safe-launch-btn') && document.getElementById('safe-launch-btn').addEventListener('click', () => handleLaunch(true));
     document.getElementById('github-link').addEventListener('click', () => {
-        shell.openExternal('https://github.com/fedevoral/devLauncher');
+        shell.openExternal('https://github.com/unstablecelik/devLauncher');
     });
     document.getElementById('instagram-link').addEventListener('click', () => {
         shell.openExternal('https://www.instagram.com/unstablecelik');
@@ -1962,8 +1962,52 @@ ipcRenderer.on('p2p-host-success', (event, roomInfo) => {
 ipcRenderer.on('lan-info', (event, info) => {
     const listEl = document.getElementById('p2p-lan-list');
     if (!listEl) return;
-    if (!info.ok || !info.ips || info.ips.length === 0) { listEl.innerText = 'No LAN interface found'; return; }
-    listEl.innerHTML = info.ips.map(ip => `${escapeHtml(ip)} <span style="color:var(--text-muted);">(port from LAN chat)</span>`).join('<br>');
+    const port = info.port || 25565;
+    const reachHost = document.getElementById('p2p-reach-host');
+    const reachPort = document.getElementById('p2p-reach-port');
+    if (reachPort && !reachPort.value) reachPort.value = port;
+    if (!info.ok || !info.ips || info.ips.length === 0) {
+        listEl.innerText = 'No LAN interface found';
+        return;
+    }
+    listEl.innerHTML = info.ips.map(ip =>
+        `<span style="color:var(--text-muted);">${escapeHtml(ip)}:${port}</span> ` +
+        `<button class="btn-secondary" data-lanip="${escapeHtml(ip)}:${port}" ` +
+        `style="padding:1px 6px; font-size:10px; margin:0 4px 2px 0;">copy</button>`
+    ).join('<br>');
+});
+
+// Event delegation: chips are re-rendered whenever hosting starts.
+const lanListEl = document.getElementById('p2p-lan-list');
+if (lanListEl) lanListEl.addEventListener('click', (e) => {
+    const target = e.target.closest('button[data-lanip]');
+    if (!target) return;
+    navigator.clipboard.writeText(target.getAttribute('data-lanip')).then(() => {
+        const original = target.innerText;
+        target.innerText = 'copied!';
+        setTimeout(() => { target.innerText = original; }, 1500);
+    });
+});
+
+const reachBtnEl = document.getElementById('p2p-reach-test-btn');
+if (reachBtnEl) reachBtnEl.addEventListener('click', async () => {
+    const host = document.getElementById('p2p-reach-host').value.trim();
+    const port = parseInt(document.getElementById('p2p-reach-port').value, 10) || 25565;
+    const resultEl = document.getElementById('p2p-reach-result');
+    if (!host) { resultEl.innerText = 'Enter the host PC IP first.'; return; }
+    resultEl.innerText = 'Testing...';
+    try {
+        const res = await ipcRenderer.invoke('lan-peer-test', { host, port });
+        if (res.ok) {
+            resultEl.innerText = `✅ Reachable in ${res.ms} ms — open Minecraft on this PC and Direct Connect to ${host}:${port}.`;
+        } else if (res.error === 'timeout') {
+            resultEl.innerText = `❌ Timeout: ${host} did not answer. Wrong IP, other PC asleep, or AP/client isolation is taking effect on this Wi-Fi.`;
+        } else {
+            resultEl.innerText = `❌ ${res.error} — ${host}:${port}. Wait for the host to "Open to LAN", then retest.`;
+        }
+    } catch (_) {
+        resultEl.innerText = '❌ Test failed (internal error).';
+    }
 });
 
 ipcRenderer.on('p2p-host-failed', (event, errorMsg) => {

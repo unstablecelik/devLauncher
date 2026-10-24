@@ -756,7 +756,7 @@
         <!-- P2P World Sharing Tab -->
         <div class="tab-content" id="p2p-tab">
             <h1>🌐 Peer-to-Peer World Sharing</h1>
-            <p>Share your local Minecraft world (Open to LAN) directly with friends over the internet without setting up port forwarding or Hamachi!</p>
+            <p>Share your local Minecraft world (Open to LAN) directly with friends over the internet without setting up port forwarding or Hamachi! Both PCs on the same school/home network? Skip the online tunnel entirely — the LAN Direct block below is faster and always works.</p>
 
             <div style="background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 20px; max-width: 600px; margin-top: 15px;">
                 <h3 style="margin-top: 0; color: var(--accent);">Host a World</h3>
@@ -787,9 +787,16 @@
                     <div style="display: flex; gap: 12px; margin-top: 10px; align-items: center; border-top: 1px solid var(--border); padding-top: 10px;">
                         <canvas id="p2p-qr-canvas" width="128" height="128" style="width: 128px; height: 128px; border-radius: 6px; background: #fff;"></canvas>
                         <div style="flex: 1; font-size: 11px; color: var(--text-muted);">
-                            <div style="font-weight: bold; color: var(--accent); margin-bottom: 4px;">LAN Direct (same Wi-Fi) — QR + list:</div>
+                            <div style="font-weight: bold; color: var(--accent); margin-bottom: 4px;">LAN Direct (same network) — no tunnel needed:</div>
                             <div id="p2p-lan-list" style="font-family: monospace; line-height: 1.7;">...</div>
-                            <div style="margin-top: 4px;">Friends scan the QR to type the address quickly, or read the IP list. Your port comes from the in-game LAN chat "Local game hosted on port X".</div>
+                            <div style="margin-top: 4px;">Second PC joins via Minecraft <b>Direct Connect</b>: pick an IP from the list, copy it, append the port if it is not 25565. The QR opens the same address on a phone/Tablet.</div>
+                            <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px;">
+                                <label style="font-weight: bold; white-space: nowrap;">Test this PC:</label>
+                                <input type="text" id="p2p-reach-host" placeholder="Host PC IP" style="flex: 1; min-width: 90px; padding: 4px 8px; font-family: monospace; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: 4px;">
+                                <input type="number" id="p2p-reach-port" placeholder="25565" style="width: 76px; padding: 4px 8px; font-family: monospace; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); border-radius: 4px;">
+                                <button class="btn-secondary" id="p2p-reach-test-btn" style="padding: 4px 10px;">Test</button>
+                            </div>
+                            <div id="p2p-reach-result" style="margin-top: 5px; min-height: 15px;"></div>
                         </div>
                     </div>
                 </div>
@@ -835,7 +842,7 @@
                 <div class="instance-badge-path" id="instance-path-text">default</div>
             </div>
 
-            <div class="launcher-desc">A minimal, high-performance Minecraft Launcher by fedevoral.</div>
+            <div class="launcher-desc">A minimal, high-performance, open-source Minecraft Launcher.</div>
         </div>
     </div>
 
@@ -865,7 +872,7 @@
 
         <div class="form-row">
             <label for="offline-username-input">Offline Username</label>
-            <input type="text" id="offline-username-input" value="fedevoral" placeholder="Enter offline nickname">
+            <input type="text" id="offline-username-input" value="" placeholder="Enter offline nickname">
             <div style="display:flex; gap:6px; margin-top:6px;">
                 <button class="btn-secondary" id="add-offline-account-btn" style="flex:1;">➕ Save Offline Account</button>
             </div>
@@ -1322,7 +1329,7 @@
                     <span class="label-text">Account</span>
                 </div>
                 <button class="account-btn-trigger" id="account-btn-trigger" onclick="openAccountModal()">
-                    fedevoral
+                    Offline
                 </button>
             </div>
             <div class="input-group">
