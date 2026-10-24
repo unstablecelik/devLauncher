@@ -26,6 +26,9 @@ builder-effective-config.yaml
 .env.*
 *.pem
 *.key
+# test fixtures are throwaway self-signed certs, never real secrets
+!tests/fixtures/tls-test.key
+!tests/fixtures/tls-test.cert
 *.p12
 *.crt
 *.cer

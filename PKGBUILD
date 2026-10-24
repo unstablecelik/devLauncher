@@ -1,5 +1,5 @@
 pkgname=devlauncher-git
-pkgver=1.0.0
+pkgver=0.12.6
 pkgrel=1
 pkgdesc="A minimal open-source Minecraft launcher built with Electron"
 arch=('x86_64')

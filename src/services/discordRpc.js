@@ -9,6 +9,7 @@ class DiscordRpcService {
         this.socket = null;
         this.connected = false;
         this.enabled = true;
+        this.reconnectInterval = null;
     }
 
     setClientId(id) {
@@ -21,8 +22,29 @@ class DiscordRpcService {
         }
     }
 
+    setEnabled(enabled) {
+        const wasEnabled = this.enabled;
+        this.enabled = !!enabled;
+        if (!this.enabled && wasEnabled) {
+            if (this.reconnectInterval) {
+                clearInterval(this.reconnectInterval);
+                this.reconnectInterval = null;
+            }
+            this.clearActivity();
+            this.disconnect();
+            console.log('[DiscordRPC] Disabled by user.');
+        }
+    }
+
     init() {
         this.connect();
+        if (!this.reconnectInterval) {
+            this.reconnectInterval = setInterval(() => {
+                if (!this.connected && this.enabled) {
+                    this.connect();
+                }
+            }, 10000); // Retry every 10 seconds automatically if Discord opens late
+        }
     }
 
     disconnect() {
@@ -34,30 +56,62 @@ class DiscordRpcService {
     }
 
     getIpcPath() {
-        if (process.platform === 'win32') {
-            return '\\\\.\\pipe\\discord-ipc-0';
-        }
-
+        // win32 uses named pipes directly (see connect()); unix sockets are searched here
         const uid = process.getuid ? process.getuid() : 1000;
-        const runUserPath = `/run/user/${uid}/discord-ipc-0`;
-        if (fs.existsSync(runUserPath)) return runUserPath;
-        
-        const envs = ['XDG_RUNTIME_DIR', 'TMPDIR', 'TMP', 'TEMP'];
-        for (const env of envs) {
-            if (process.env[env]) {
-                const testPath = path.join(process.env[env], 'discord-ipc-0');
+        const searchDirs = [
+            `/run/user/${uid}`,
+            process.env.XDG_RUNTIME_DIR,
+            process.env.TMPDIR,
+            process.env.TMP,
+            process.env.TEMP,
+            path.join(os.homedir(), '.var/app/com.discordapp.Discord/config'),
+            path.join(os.homedir(), '.var/app/com.discordapp.Vesktop/config'),
+            '/tmp'
+        ].filter(Boolean);
+
+        for (const dir of searchDirs) {
+            for (let i = 0; i < 10; i++) {
+                const testPath = path.join(dir, `discord-ipc-${i}`);
                 if (fs.existsSync(testPath)) return testPath;
             }
         }
-        
-        const flatpakPath = path.join(os.homedir(), '.var/app/com.discordapp.Discord/config/discord-ipc-0');
-        if (fs.existsSync(flatpakPath)) return flatpakPath;
 
         return '/tmp/discord-ipc-0';
     }
 
     connect() {
         if (this.connected || !this.enabled) return;
+
+        if (process.platform === 'win32') {
+            const pipes = Array.from({ length: 10 }, (_, i) => `\\\\.\\pipe\\discord-ipc-${i}`);
+            const tryPipe = (index) => {
+                if (index >= pipes.length || this.connected || !this.enabled) return;
+                try {
+                    this.socket = net.createConnection(pipes[index], () => {
+                        this.connected = true;
+                        this.sendHandshake();
+                    });
+
+                    this.socket.on('error', () => {
+                        this.connected = false;
+                        if (this.socket) { try { this.socket.destroy(); } catch (_) {} }
+                        this.socket = null;
+                        tryPipe(index + 1);
+                    });
+
+                    this.socket.on('close', () => {
+                        this.connected = false;
+                        this.socket = null;
+                    });
+                } catch (err) {
+                    this.connected = false;
+                    this.socket = null;
+                    tryPipe(index + 1);
+                }
+            };
+            tryPipe(0);
+            return;
+        }
 
         const ipcPath = this.getIpcPath();
         try {

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "flywheel-create-incompat",
+    "name": "Flywheel & Create Incompatibility",
+    "pattern": "java\\.lang\\.NoSuchFieldError:.*flywheel|flywheel.*NullPointerException.*backend",
+    "cause": "The installed Flywheel mod is incompatible or conflicts with this version of Create.",
+    "solution": "Disable the Flywheel mod, or upgrade to a version compatible with your Create build.",
+    "autoFix": {
+      "type": "disable_mod",
+      "target": "flywheel"
+    }
+  },
+  {
+    "id": "optifine-fabric-conflict",
+    "name": "OptiFine & Fabric Conflict",
+    "pattern": "optifine.*OptiFine.*Fabric|OptiFabric.*crash|Failed to load class.*optifine",
+    "cause": "OptiFine does not run directly on Fabric, or it clashes with OptiFabric / Sodium.",
+    "solution": "Instead of OptiFine and OptiFabric, use the Sodium + Iris mods. OptiFine can be disabled.",
+    "autoFix": {
+      "type": "disable_mod",
+      "target": "optifine"
+    }
+  },
+  {
+    "id": "out-of-memory",
+    "name": "Insufficient RAM (Out Of Memory)",
+    "pattern": "java\\.lang\\.OutOfMemoryError|Minecraft has run out of memory|There is insufficient memory for the Java Runtime",
+    "cause": "Minecraft or its mods hit the allocated maximum RAM limit.",
+    "solution": "Raise the Max RAM in Launcher Settings to at least 4G or 6G.",
+    "autoFix": {
+      "type": "increase_ram",
+      "target": "6G"
+    }
+  },
+  {
+    "id": "java-version-mismatch",
+    "name": "Incompatible Java Version",
+    "pattern": "has been compiled by a more recent version of the Java Runtime Environment|UnsupportedClassVersionError:.*class file version (6[1-9]|7[0-9])",
+    "cause": "Minecraft 1.18+ requires Java 17, and 1.20.5+ requires at least Java 21.",
+    "solution": "Open the Settings tab and install Java 21 with the 1-Click Java Installer.",
+    "autoFix": {
+      "type": "open_settings",
+      "target": "java"
+    }
+  },
+  {
+    "id": "mixin-apply-failure",
+    "name": "Mod Mixin Conflict",
+    "pattern": "org\\.spongepowered\\.asm\\.mixin\\.transformer\\.throwables\\.MixinTransformerError|Mixin apply failed for mod: ([a-zA-Z0-9_-]+)",
+    "cause": "Two or more mods tried to modify the same game function and collided.",
+    "solution": "Temporarily disable the newest (or conflicting) mod and try again.",
+    "autoFix": {
+      "type": "inspect_logs",
+      "target": "mixin"
+    }
+  },
+  {
+    "id": "duplicate-mods",
+    "name": "Duplicate Mod Detected",
+    "pattern": "DuplicateModsFoundException|Duplicate mod ID found: ([a-zA-Z0-9_-]+)",
+    "cause": "Two different versions of the same mod exist in your mods folder.",
+    "solution": "Delete the older duplicate from the mods folder.",
+    "autoFix": {
+      "type": "open_mods_folder",
+      "target": "mods"
+    }
+  },
+  {
+    "id": "opengl-driver-crash",
+    "name": "OpenGL / GPU Driver Error",
+    "pattern": "org\\.lwjgl\\.opengl\\.OpenGLException|GLFW error 65542|WGL: The driver does not appear to support OpenGL",
+    "cause": "Your GPU driver does not support OpenGL 3.2+, or the driver is outdated.",
+    "solution": "Update your graphics drivers, or enable the Mesa / D3D compatibility mode.",
+    "autoFix": {
+      "type": "info_only",
+      "target": "gpu"
+    }
+  },
+  {
+    "id": "sodium-fabric-missing",
+    "name": "Missing Sodium Dependency (Fabric/Quilt)",
+    "pattern": "(?:missing|required) (?:required )?mods? ['\\\"]?sodium\\b|sodium['\\\"]? (?:is )?required",
+    "cause": "Iris / shader mods need the Sodium rendering mod, but it is not installed.",
+    "solution": "Install the Sodium mod from Modrinth (one click below).",
+    "autoFix": {
+      "type": "install_mod",
+      "target": "sodium"
+    }
+  },
+  {
+    "id": "fabric-missing-dependency",
+    "name": "Unmet Mod Dependencies (Fabric)",
+    "pattern": "(?:Missing(?: or unsupported)? mandatory dependencies|Critical dependency failure|Missing mods:|Unmet dependency)",
+    "cause": "A mod requires another mod dependency that is not installed.",
+    "solution": "Read the mod name in the snippet below, then search and install it from Modrinth.",
+    "autoFix": {
+      "type": "search_modrinth",
+      "target": ""
+    }
+  }
+]

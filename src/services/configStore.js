@@ -3,14 +3,21 @@ const path = require('path');
 const { app } = require('electron');
 
 class ConfigStore {
-    constructor() {
-        this.configPath = path.join(app.getPath('userData'), 'devlauncher_config.json');
+    /**
+     * options.targetDir allows tests/tools to point at an isolated config
+     * location; in the app itself the electron userData path is used.
+     */
+    constructor(options = {}) {
+        const baseDir = (options && typeof options.targetDir === 'string')
+            ? options.targetDir
+            : app.getPath('userData');
+        this.configPath = path.join(baseDir, 'devlauncher_config.json');
         this.defaultConfig = {
             accountType: 'offline', // 'offline' | 'microsoft'
-            username: 'fedevoral',
+            username: 'Player',
             microsoftAuthData: null,
             selectedVersion: '1.21.1',
-            selectedInstanceId: 'default',
+            selectedInstanceId: null,
             minRam: '2G',
             maxRam: '4G',
             javaPath: '',
@@ -18,7 +25,12 @@ class ConfigStore {
             enableJVMBoost: true,
             gcMode: 'g1gc', // 'g1gc' | 'zgc'
             customJvmArgs: '',
+            proxyMode: 'system', // 'system' | 'off' | 'custom'
+            proxyUrl: '',
+            proxyUser: '',
+            proxyPass: '',
             theme: 'dark',
+            customThemeData: null,
             enableDiscordRpc: true,
             discordClientId: '1342000000000000000' // devLauncher Application Client ID
         };

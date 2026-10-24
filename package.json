@@ -1,10 +1,11 @@
 {
   "name": "devlauncher",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "description": "A minimal, high-performance Minecraft Launcher",
   "main": "main.js",
   "scripts": {
     "start": "ELECTRON_OZONE_PLATFORM_HINT=x11 electron .",
+    "test": "node tests/run-tests.js",
     "dist": "electron-builder --win",
     "dist:win": "electron-builder --win",
     "dist:mac": "electron-builder --mac",
@@ -15,35 +16,124 @@
     "build:inno": "iscc installer.iss"
   },
   "build": {
-    "appId": "com.fedevoral.devlauncher",
+    "appId": "com.unstablecelik.devlauncher",
     "productName": "devLauncher",
     "directories": {
       "output": "dist"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "unstablecelik",
+        "repo": "devLauncher"
+      }
+    ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64", "arm64", "ia32"] },
-        { "target": "zip", "arch": ["x64", "arm64", "ia32"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64",
+            "ia32"
+          ]
+        }
       ],
-      "icon": "assets/icons/icon.ico"
+      "icon": "assets/icons/icon.ico",
+      "signtoolOptions": {
+        "signingHashAlgorithms": ["sha256"],
+        "rfc3161TimeStampServer": "http://timestamp.digicert.com"
+      }
     },
     "mac": {
       "target": [
-        { "target": "dmg", "arch": ["x64", "arm64", "universal"] },
-        { "target": "zip", "arch": ["x64", "arm64", "universal"] }
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
+        }
       ],
       "icon": "assets/icons/icon.png",
-      "category": "public.app-category.games"
+      "category": "public.app-category.games",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": false
     },
     "linux": {
       "target": [
-        { "target": "AppImage", "arch": ["x64", "arm64", "armv7l"] },
-        { "target": "tar.gz", "arch": ["x64", "arm64", "armv7l"] },
-        { "target": "deb", "arch": ["x64", "arm64", "armv7l"] },
-        { "target": "rpm", "arch": ["x64", "arm64"] },
-        { "target": "pacman", "arch": ["x64", "arm64"] },
-        { "target": "apk", "arch": ["x64", "arm64", "armv7l"] },
-        { "target": "freebsd", "arch": ["x64"] }
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "pacman",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "apk",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "freebsd",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "icon": "assets/icons/icon.png",
       "category": "Game"
@@ -55,13 +145,15 @@
     "electron"
   ],
   "author": "fedevoral",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "type": "commonjs",
   "dependencies": {
+    "adm-zip": "^0.5.16",
+    "electron-updater": "^6.8.9",
     "localtunnel": "^2.0.2",
     "minecraft-launcher-core": "^3.18.2",
     "msmc": "^5.0.5",
-    "peerjs": "^1.5.5"
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "electron": "^42.5.0",

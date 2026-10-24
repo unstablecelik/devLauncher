@@ -20,6 +20,24 @@ function normalizeJavaMajor(versionString) {
     return Number.isNaN(parsed) ? major : String(parsed);
 }
 
+/**
+ * Probe a java executable's major version by running `java -version` on it.
+ * This launches the java binary itself (never a shell) and is the single
+ * spot in the project that does so.
+ */
+function detectJavaMajor(javaExe) {
+    try {
+        const result = spawnSync(javaExe, ['-version'], { encoding: 'utf8' });
+        const output = `${result.stdout || ''}\n${result.stderr || ''}`;
+        const match = output.match(/version\s+"?(\d+(?:\.\d+)?)/);
+        if (match) {
+            const normalized = normalizeJavaMajor(match[1]);
+            return parseInt(normalized, 10) || 21;
+        }
+    } catch (_) {}
+    return 21;
+}
+
 function pushRuntime(runtimes, javaBin, nameFallback) {
     if (!fs.existsSync(javaBin)) return;
     let version = 'Unknown';
@@ -40,6 +58,7 @@ function pushRuntime(runtimes, javaBin, nameFallback) {
 function getInstalledJavaRuntimes() {
     ensureJavaDir();
     const runtimes = [];
+    const exe = process.platform === 'win32' ? 'java.exe' : 'java';
 
     if (process.platform === 'darwin') {
         const searchPaths = [
@@ -64,8 +83,13 @@ function getInstalledJavaRuntimes() {
     }
 
     const searchPaths = (process.platform === 'win32')
-        ? [path.join(process.env['ProgramFiles'] || 'C:\\Program Files', 'Java'), JAVA_INSTALL_DIR]
-        : (process.platform.startsWith('freebsd') || process.platform.startsWith('openbsd') || process.platform.startsWith('netbsd'))
+        ? [
+            path.join(process.env['ProgramFiles'] || 'C:\\Program Files', 'Java'),
+            path.join(process.env['ProgramFiles'] || 'C:\\Program Files', 'Eclipse Adoptium'),
+            process.env['JAVA_HOME'] || null,
+            JAVA_INSTALL_DIR
+          ].filter(Boolean)
+        : (isBsd())
             ? ['/usr/local', '/usr/local/lib', '/opt', JAVA_INSTALL_DIR]
             : ['/usr/lib/jvm', '/usr/lib64/jvm', '/opt', '/usr/local', JAVA_INSTALL_DIR];
 
@@ -74,20 +98,28 @@ function getInstalledJavaRuntimes() {
         try {
             const entries = fs.readdirSync(searchPath);
             for (const entry of entries) {
-                const javaBin = path.join(searchPath, entry, 'bin', 'java');
+                const javaBin = path.join(searchPath, entry, 'bin', exe);
                 pushRuntime(runtimes, javaBin, entry);
             }
             // Also support flat installs such as /usr/local/bin/java
-            const directJava = path.join(searchPath, 'bin', 'java');
+            const directJava = path.join(searchPath, 'bin', exe);
             pushRuntime(runtimes, directJava, path.basename(searchPath));
         } catch (_) {}
     }
 
-    // PATH fallback
+    // PATH fallback - pure filesystem scan of process.env.PATH (no shell).
     try {
-        const javaOnPath = spawnSync(process.platform === 'win32' ? 'where' : 'which', ['java'], { encoding: 'utf8' });
-        const first = (javaOnPath.stdout || '').split(/\r?\n/)[0].trim();
-        if (first) pushRuntime(runtimes, first, path.basename(first));
+        const dirs = String(process.env.PATH || '').split(process.platform === 'win32' ? ';' : ':');
+        for (const dir of dirs) {
+            try {
+                if (!dir) continue;
+                const candidate = path.join(dir, exe);
+                if (fs.existsSync(candidate)) {
+                    pushRuntime(runtimes, candidate, path.basename(candidate));
+                    break;
+                }
+            } catch (_) {}
+        }
     } catch (_) {}
 
     return runtimes;
@@ -97,9 +129,29 @@ function isMusl() {
     try {
         if (process.platform !== 'linux') return false;
         if (fs.existsSync('/etc/alpine-release')) return true;
-        const result = spawnSync('ldd', ['--version'], { encoding: 'utf8' });
-        const output = `${result.stdout || ''}\n${result.stderr || ''}`;
-        return /musl/i.test(output);
+        // Pure-filesystem musl probe: the loader lives at
+        // /lib/ld-musl-<arch>.so.1 (also /lib64 and /usr/lib on some distros).
+        const archAliases = {
+            x64: ['x86_64'],
+            arm64: ['aarch64'],
+            arm: ['armhf', 'arm'],
+            ia32: ['i386'],
+            x32: ['i386'],
+            riscv64: ['riscv64'],
+            s390x: ['s390x'],
+            ppc64le: ['powerpc64le'],
+            ppc64: ['powerpc64']
+        };
+        const names = archAliases[process.arch] || [];
+        const roots = ['/lib', '/lib64', '/usr/lib'];
+        for (const name of names) {
+            for (const root of roots) {
+                try {
+                    if (fs.existsSync(`${root}/ld-musl-${name}.so.1`)) return true;
+                } catch (_) {}
+            }
+        }
+        return false;
     } catch (_) {
         return false;
     }
@@ -135,7 +187,8 @@ function getAdoptiumArch() {
 async function downloadAndInstallJava(versionMajor = 21) {
     ensureJavaDir();
     const targetDir = path.join(JAVA_INSTALL_DIR, `openjdk-${versionMajor}`);
-    const javaBin = path.join(targetDir, 'bin', 'java');
+    const exe = process.platform === 'win32' ? 'java.exe' : 'java';
+    const javaBin = path.join(targetDir, 'bin', exe);
     const macJavaBin = path.join(targetDir, 'Contents', 'Home', 'bin', 'java');
 
     if (fs.existsSync(javaBin)) return javaBin;
@@ -153,43 +206,54 @@ async function downloadAndInstallJava(versionMajor = 21) {
 
     console.log(`[JavaInstaller] Downloading OpenJDK ${versionMajor} for ${osType}-${arch}...`);
 
-    return new Promise((resolve, reject) => {
-        https.get(apiUrl, (res) => {
-            if (res.statusCode === 302 || res.statusCode === 301) {
-                const redirectUrl = res.headers.location;
-                https.get(redirectUrl, (archiveRes) => {
-                    const fileStream = fs.createWriteStream(archivePath);
-                    archiveRes.pipe(fileStream);
-
-                    fileStream.on('finish', () => {
-                        fileStream.close();
-                        try {
-                            fs.mkdirSync(targetDir, { recursive: true });
-                            if (isWindows) {
-                                const AdmZip = require('adm-zip');
-                                const zip = new AdmZip(archivePath);
-                                zip.extractAllTo(targetDir, true);
-                            } else {
-                                const result = spawnSync('tar', ['-xzf', archivePath, '-C', targetDir, '--strip-components=1'], { encoding: 'utf8' });
-                                if (result.status !== 0) {
-                                    throw new Error(result.stderr || 'tar extraction failed');
-                                }
-                            }
-
-                            fs.unlinkSync(archivePath);
-                            const resolvedBin = fs.existsSync(javaBin) ? javaBin : (fs.existsSync(macJavaBin) ? macJavaBin : javaBin);
-                            console.log(`[JavaInstaller] Java ${versionMajor} installed to ${resolvedBin}`);
-                            resolve(resolvedBin);
-                        } catch (extractErr) {
-                            reject(extractErr);
-                        }
-                    });
-                }).on('error', reject);
-            } else {
-                reject(new Error(`Failed to fetch Java ${versionMajor} binary (HTTP ${res.statusCode})`));
+    // Follow the full redirect chain (Adoptium API -> GitHub -> objects.githubusercontent.com)
+    // and verify the final status code before writing the body.
+    const download = (currentUrl, redirectCount) => new Promise((resolveDownload, rejectDownload) => {
+        if (redirectCount > 5) return rejectDownload(new Error('Too many redirects while downloading OpenJDK'));
+        https.get(currentUrl, (res) => {
+            const status = res.statusCode || 0;
+            if ((status === 301 || status === 302 || status === 303 || status === 307 || status === 308) && res.headers.location) {
+                res.resume();
+                return resolveDownload(download(new URL(res.headers.location, currentUrl).toString(), redirectCount + 1));
             }
-        }).on('error', reject);
+            if (status !== 200) {
+                res.resume();
+                const hint = status === 404 ? ` (no Temurin build for ${osType}/${arch} Java ${versionMajor})` : '';
+                return rejectDownload(new Error(`Failed to fetch Java ${versionMajor} binary (HTTP ${status})${hint}`));
+            }
+            const fileStream = fs.createWriteStream(archivePath);
+            res.pipe(fileStream);
+            fileStream.on('finish', () => resolveDownload());
+            fileStream.on('error', rejectDownload);
+        }).on('error', (e) => rejectDownload(new Error(`Network error while downloading OpenJDK: ${e.message}`)));
     });
+
+    try {
+        await download(apiUrl, 0);
+
+        fs.mkdirSync(targetDir, { recursive: true });
+        if (isWindows) {
+            const AdmZip = require('adm-zip');
+            const zip = new AdmZip(archivePath);
+            zip.extractAllTo(targetDir, true);
+        } else {
+            // Pure-Node extraction (no tar binary spawn).
+            await extractTarGz(archivePath, targetDir, { stripComponents: 1 });
+        }
+    } catch (err) {
+        // Never leave a broken / partial archive behind
+        try { if (fs.existsSync(archivePath)) fs.unlinkSync(archivePath); } catch (_) {}
+        throw err;
+    }
+
+    try { fs.unlinkSync(archivePath); } catch (_) {}
+
+    const resolvedBin = fs.existsSync(javaBin) ? javaBin : (fs.existsSync(macJavaBin) ? macJavaBin : null);
+    if (!resolvedBin) {
+        throw new Error(`OpenJDK ${versionMajor} archive extracted but no ${exe} binary found inside.`);
+    }
+    console.log(`[JavaInstaller] Java ${versionMajor} installed to ${resolvedBin}`);
+    return resolvedBin;
 }
 
-module.exports = { getInstalledJavaRuntimes, downloadAndInstallJava };
+module.exports = { getInstalledJavaRuntimes, downloadAndInstallJava, detectJavaMajor };

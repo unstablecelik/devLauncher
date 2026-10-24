@@ -1,0 +1,33 @@
+name: 💡 Feature request
+description: Suggest an idea or improvement for devLauncher
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea? Describe the problem and the solution you would like.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What would you like to be able to do that you cannot today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed solution
+      description: A clear description of what should happen. Mockups welcome.
+
+  - type: dropdown
+    id: willingness
+    attributes:
+      label: Would you like to help implement this?
+      options:
+        - "Yes, I can code it"
+        - "Yes, but I would need guidance"
+        - "No, just the idea"
+    validations:
+      required: true

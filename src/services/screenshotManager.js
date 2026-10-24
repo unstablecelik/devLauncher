@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const zlib = require('zlib');
+const AdmZip = require('adm-zip');
 
 class ScreenshotManager {
     static getScreenshots(instanceDir) {
@@ -36,34 +36,11 @@ class ScreenshotManager {
             throw new Error('No screenshot images to export');
         }
 
-        // Lightweight zip writer using standard PK zip format headers
-        const zipBuffers = [];
-
-        function writeZipHeader(filename, fileData) {
-            const nameBuffer = Buffer.from(filename);
-            const header = Buffer.alloc(30 + nameBuffer.length);
-            header.writeUInt32LE(0x04034b50, 0); // Local file header signature
-            header.writeUInt16LE(20, 4); // Version needed to extract
-            header.writeUInt16LE(0, 6); // General purpose bit flag
-            header.writeUInt16LE(0, 8); // Compression method (0 = store)
-            header.writeUInt16LE(0, 10); // Last mod file time
-            header.writeUInt16LE(0, 12); // Last mod file date
-            header.writeUInt32LE(0, 14); // CRC-32 (0 for simple store)
-            header.writeUInt32LE(fileData.length, 18); // Compressed size
-            header.writeUInt32LE(fileData.length, 22); // Uncompressed size
-            header.writeUInt16LE(nameBuffer.length, 26); // Filename length
-            header.writeUInt16LE(0, 28); // Extra field length
-            nameBuffer.copy(header, 30);
-            return Buffer.concat([header, fileData]);
-        }
-
-        for (const file of files) {
-            const filePath = path.join(screenshotsDir, file);
-            const content = fs.readFileSync(filePath);
-            zipBuffers.push(writeZipHeader(file, content));
-        }
-
-        fs.writeFileSync(targetZipPath, Buffer.concat(zipBuffers));
+        const zip = new AdmZip();
+        files.forEach(file => {
+            zip.addLocalFile(path.join(screenshotsDir, file));
+        });
+        zip.writeZip(targetZipPath);
         return targetZipPath;
     }
 }

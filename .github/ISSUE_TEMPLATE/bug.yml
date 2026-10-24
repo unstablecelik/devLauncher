@@ -1,0 +1,64 @@
+name: 🐞 Bug report
+description: Report something broken in devLauncher
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill in the details below.
+
+  - type: input
+    id: version
+    attributes:
+      label: devLauncher version
+      description: Look in Settings → About devLauncher
+      placeholder: e.g. 0.13.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 10/11
+        - macOS
+        - Linux (Debian/Ubuntu/Mint)
+        - Linux (Fedora/RHEL/openSUSE)
+        - Linux (Arch/Manjaro)
+        - Linux (musl / Alpine / Void)
+        - FreeBSD / OpenBSD / NetBSD
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part is affected?
+      options:
+        - Game launch / crash
+        - Mods manager / Modrinth
+        - Instances / import / export
+        - P2P multiplayer / Remote Play
+        - Snapshots / Time Machine
+        - Servers / share codes
+        - UI / themes / fonts
+        - Accounts / skins
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Steps to reproduce + what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / crash report
+      description: Paste the relevant `latest.log` or crash report excerpt (use the built-in Diagnostics Zip if not sure).

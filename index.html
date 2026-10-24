@@ -26,7 +26,7 @@
         body { 
             margin: 0; 
             padding: 0; 
-            font-family: 'JetBrains Mono', monospace; 
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); 
             height: 100vh; 
             display: flex; 
             flex-direction: column;
@@ -39,12 +39,14 @@
 
         /* Top Navigation Header */
         .top-navbar {
-            height: 48px;
+            min-height: 48px;
+            padding: 0 10px;
             background-color: var(--bg-bar);
             border-bottom: 2px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             padding: 0 20px;
             z-index: 10;
         }
@@ -61,6 +63,8 @@
         .navbar-tabs {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap;
+            padding: 4px 0;
         }
 
         .nav-tab {
@@ -72,7 +76,7 @@
             border: 1px solid transparent;
             border-radius: 6px;
             cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             transition: all 0.2s ease;
         }
 
@@ -148,7 +152,7 @@
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -246,7 +250,7 @@
             width: 180px;
             background-color: var(--bg-dark);
             color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             cursor: pointer;
             text-align: left;
             white-space: nowrap;
@@ -267,7 +271,7 @@
             width: 185px; 
             background-color: var(--bg-dark);
             color: var(--text); 
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             transition: border-color 0.2s;
             appearance: none;
             -webkit-appearance: none;
@@ -315,7 +319,7 @@
             color: #ffffff; 
             border-radius: 8px; 
             cursor: pointer; 
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             transition: all 0.2s ease; 
             letter-spacing: 1px;
             display: flex;
@@ -378,7 +382,9 @@
             background: var(--bg-dark); 
             padding: 24px; 
             border-radius: 10px; 
-            width: 460px; 
+            width: min(460px, 92vw); 
+            max-height: 86vh; 
+            overflow-y: auto;
             color: var(--text); 
             box-shadow: 0px 15px 35px rgba(0,0,0,0.8); 
             border: 1px solid var(--border); 
@@ -411,7 +417,7 @@
             border: 1px solid var(--border); 
             background: var(--bg-main); 
             color: var(--text); 
-            font-family: 'JetBrains Mono', monospace; 
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); 
             font-size: 13px;
         }
 
@@ -421,7 +427,7 @@
             color: var(--accent);
             padding: 9px 12px;
             border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
@@ -433,13 +439,35 @@
             border-color: var(--accent);
         }
 
+        .btn-primary {
+            background-color: var(--accent);
+            border: none;
+            color: var(--bg-dark);
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.15);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .ms-login-btn {
             background-color: #00a4ef;
             border: none;
             color: #ffffff;
             padding: 12px;
             border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -464,7 +492,7 @@
             width: 100%; 
             border-radius: 6px; 
             font-weight: 700; 
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
             transition: background-color 0.2s;
             margin-top: 10px;
         }
@@ -487,7 +515,7 @@
             border: 1px solid var(--border);
             background: var(--bg-dark);
             color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
         }
 
         .type-sub-tabs {
@@ -584,7 +612,7 @@
 
         .theme-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -628,7 +656,9 @@
             <button class="nav-tab active" onclick="switchTab('dashboard-tab', this)">Dashboard</button>
             <button class="nav-tab" onclick="switchTab('modrinth-tab', this)">Mod Manager</button>
             <button class="nav-tab" onclick="switchTab('instances-tab', this)">Instances</button>
-            <button class="nav-tab" onclick="switchTab('screenshots-tab', this)">Screenshots</button>
+            <button class="nav-tab" onclick="switchTab('worlds-tab', this)">🗺️ Worlds</button>
+            <button class="nav-tab" onclick="switchTab('p2p-tab', this)">🌐 P2P Multiplayer</button>
+            <button class="nav-tab" onclick="switchTab('screenshots-tab', this)">📸 Screenshots</button>
             <button class="nav-tab" onclick="openThemeModal()">🎨 Themes</button>
         </div>
     </div>
@@ -637,15 +667,21 @@
     <div class="content-container">
         <!-- Dashboard Tab -->
         <div class="tab-content active" id="dashboard-tab">
-            <h1>Minecraft 26.3 Major Update Support</h1>
+            <h1>devLauncher - the launcher you need</h1>
             <p>
-                devLauncher fully integrates official support for the upcoming <strong>Minecraft 26.3</strong> release. This engine update introduces next-generation multithreaded chunk rendering, dynamic lighting overhaul, acoustics, and native OpenJDK optimizations.
+                devLauncher
             </p>
 
-            <h2>devLauncher 2.0 Feature Stack</h2>
+            <h2>devLauncher Feature Stack</h2>
             <p>
-                Welcome to devLauncher 2.0! Featuring <strong>isolated instance environments</strong>, persistent multi-account session management, <strong>Modrinth Mod/Shader/Resourcepack Manager</strong>, 1-Click <strong>Performance Modpack installer</strong>, <strong>Screenshot Zip Export</strong>, <strong>Discord Rich Presence</strong>, full <strong>Theme Store</strong> (Catppuccin, Nord, OLED Black, Dracula), and <strong>ZGC Zero-Stutter Garbage Collector Tuning</strong>.
+                Featuring <strong>isolated instance environments</strong>, <strong>Modrinth Mod/Shader/Resourcepack Manager</strong>, 1-Click <strong>Performance Modpack installer</strong>, <strong>Screenshot Zip Export</strong>, <strong>Discord Rich Presence</strong>, full <strong>Theme Store</strong> (Catppuccin, Nord, OLED Black, Dracula), and <strong>ZGC Zero-Stutter Garbage Collector Tuning</strong>.
             </p>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                <button class="btn-secondary" id="open-import-btn">🔄 Import from other launchers</button>
+                <button class="btn-secondary" id="open-remoteplay-btn">🖥 Remote Play</button>
+            </div>
+            <div id="benchmark-line" style="margin-top: 12px; font-size: 11px; color: var(--text-muted);"></div>
         </div>
 
         <!-- Modrinth Mod Browser Tab -->
@@ -674,37 +710,125 @@
             <h1>Instance Manager</h1>
             <p>Manage isolated Minecraft instances with custom mod loaders, RAM allocations, and performance packs.</p>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
                 <button class="btn-secondary" onclick="openCreateInstanceModal()">+ Create New Instance</button>
                 <button class="btn-secondary" id="install-perf-pack-btn">⚡ 1-Click Performance Pack</button>
                 <button class="btn-secondary" id="export-instance-zip-btn">Export Active Instance (.zip)</button>
+                <button class="btn-secondary" id="share-code-btn">🔗 Share Code</button>
+                <button class="btn-secondary" id="one-click-server-btn">🖧 1-Click Server</button>
+                <button class="btn-secondary" id="analyze-crash-btn">🔍 Analyze Last Crash</button>
+                <button class="btn-secondary" id="open-snapshots-btn">⏪ Snapshots</button>
+                <button class="btn-secondary" id="open-integrity-btn">🛡 Integrity Sweep</button>
             </div>
 
             <div class="instance-list" id="instances-container">
                 <!-- Dynamically populated -->
             </div>
+
+            <h2 style="margin-top: 30px; font-size: 16px; color: var(--accent);">🧩 Installed Mods Manager (<span id="active-instance-name-display">Active Instance</span>)</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Enable, disable, or remove mods for your active instance. Every change is recorded — undo anything from the Time Machine.</p>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn-secondary" id="open-timemachine-btn">⏱ Mod Time Machine</button>
+                <button class="btn-secondary" id="open-moddoctor-btn">🩺 Mod Doctor</button>
+                <button class="btn-secondary" id="check-mod-updates-btn">⬆ Check Mod Updates</button>
+                <button class="btn-primary" id="update-mods-all-btn" style="display:none;">⬆ Update All (<span id="update-count-display">0</span>)</button>
+            </div>
+            <div id="mod-updates-status" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+            <div id="installed-mods-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 250px; overflow-y: auto; background: var(--bg-dark); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                <div style="color: var(--text-muted); font-size: 13px;">Loading mods...</div>
+            </div>
+        </div>
+
+        <!-- Worlds / Saves Manager Tab -->
+        <div class="tab-content" id="worlds-tab">
+            <h1>🗺️ Worlds & Save Explorer</h1>
+            <p>Explore your Minecraft worlds, inspect level stats, and take 1-click backups without launching the game.</p>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button class="btn-secondary" id="refresh-worlds-btn">🔄 Refresh Worlds</button>
+            </div>
+
+            <div id="worlds-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 15px;">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- P2P World Sharing Tab -->
+        <div class="tab-content" id="p2p-tab">
+            <h1>🌐 Peer-to-Peer World Sharing</h1>
+            <p>Share your local Minecraft world (Open to LAN) directly with friends over the internet without setting up port forwarding or Hamachi!</p>
+
+            <div style="background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 20px; max-width: 600px; margin-top: 15px;">
+                <h3 style="margin-top: 0; color: var(--accent);">Host a World</h3>
+                <p style="font-size: 12px; color: var(--text-muted);">Open your world in Minecraft to LAN (Esc -> Open to LAN), then enter the LAN port shown in chat below.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">Local LAN Port:</label>
+                        <input type="number" id="p2p-port-input" value="25565" placeholder="e.g. 54321 or 25565" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); font-family: inherit;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 4px;">Room Code / Custom Prefix (Optional):</label>
+                        <input type="text" id="p2p-room-input" placeholder="e.g. fedeworld" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text); font-family: inherit;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <button class="btn-primary" id="p2p-start-btn" style="flex: 1; padding: 10px;">🚀 Share World Online</button>
+                        <button class="close-btn" id="p2p-stop-btn" style="flex: 1; padding: 10px; margin-top: 0; display: none;">🛑 Stop Sharing</button>
+                    </div>
+                </div>
+
+                <div id="p2p-status-box" style="margin-top: 20px; display: none; padding: 12px; background: rgba(46, 204, 113, 0.1); border: 1px solid var(--accent); border-radius: 6px;">
+                    <div style="font-size: 12px; font-weight: bold; color: var(--accent); margin-bottom: 6px;">✅ World Live Online!</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Share this Server Address with your friends (Direct Connect in Multiplayer):</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="p2p-connect-address" readonly style="flex: 1; padding: 6px 10px; font-family: monospace; font-size: 13px; font-weight: bold; background: var(--bg-bar); border: 1px solid var(--border); color: var(--accent); border-radius: 4px;">
+                        <button class="btn-secondary" id="p2p-copy-btn" style="padding: 6px 12px;">Copy</button>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 10px; align-items: center; border-top: 1px solid var(--border); padding-top: 10px;">
+                        <canvas id="p2p-qr-canvas" width="128" height="128" style="width: 128px; height: 128px; border-radius: 6px; background: #fff;"></canvas>
+                        <div style="flex: 1; font-size: 11px; color: var(--text-muted);">
+                            <div style="font-weight: bold; color: var(--accent); margin-bottom: 4px;">LAN Direct (same Wi-Fi) — QR + list:</div>
+                            <div id="p2p-lan-list" style="font-family: monospace; line-height: 1.7;">...</div>
+                            <div style="margin-top: 4px;">Friends scan the QR to type the address quickly, or read the IP list. Your port comes from the in-game LAN chat "Local game hosted on port X".</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Screenshots Manager Tab -->
         <div class="tab-content" id="screenshots-tab">
-            <h1>Screenshots Manager</h1>
-            <p>View game screenshots captured in your active instance and export them as a compressed .zip file.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="margin-bottom: 4px;">📸 Screenshots Gallery</h1>
+                    <p style="margin-top: 0; font-size: 12px; color: var(--text-muted);">View, click to copy to clipboard for Discord, or export as zip.</p>
+                </div>
+                <button class="btn-secondary" id="export-screenshots-zip-btn">Export All (.zip)</button>
+            </div>
 
-            <button class="btn-secondary" id="export-screenshots-zip-btn" style="margin-bottom: 15px;">Export All Screenshots (.zip)</button>
-
-            <div class="screenshots-grid" id="screenshots-container">
+            <div class="screenshots-grid" id="screenshots-container" style="margin-top: 15px;">
                 <!-- Dynamically populated -->
             </div>
         </div>
 
         <!-- Right Side Panel -->
         <div class="side-panel">
-            <button class="github-btn" id="github-link">
-                <svg height="18" width="18" viewBox="0 0 16 16" fill="white">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                </svg>
-                GitHub
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <button class="github-btn" id="github-link" style="flex: 1;">
+                    <svg height="18" width="18" viewBox="0 0 16 16" fill="white">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                    GitHub
+                </button>
+                <button class="github-btn" id="instagram-link" style="flex: 1; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border-color: #a03060;">
+                    <svg height="18" width="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    Instagram
+                </button>
+            </div>
 
             <div class="instance-badge">
                 <div class="instance-badge-title">Active Instance</div>
@@ -721,7 +845,15 @@
     <!-- Account Selection Modal -->
     <div class="modal" id="account-modal">
         <h3 class="modal-title">Account & Identity</h3>
-        
+
+        <!-- Multi-account hub -->
+        <div class="form-row">
+            <label>Saved Accounts</label>
+            <div id="accounts-list" style="display:flex;flex-direction:column;gap:8px;">
+                <div style="color: var(--text-muted); font-size: 11px;">No accounts saved yet.</div>
+            </div>
+        </div>
+
         <div class="form-row">
             <label>Online Mode (Official / Hypixel Support)</label>
             <button class="ms-login-btn" id="ms-login-btn">
@@ -734,9 +866,29 @@
         <div class="form-row">
             <label for="offline-username-input">Offline Username</label>
             <input type="text" id="offline-username-input" value="fedevoral" placeholder="Enter offline nickname">
+            <div style="display:flex; gap:6px; margin-top:6px;">
+                <button class="btn-secondary" id="add-offline-account-btn" style="flex:1;">➕ Save Offline Account</button>
+            </div>
         </div>
 
-        <div class="form-row">
+        <!-- Microsoft profile / skin manager -->
+        <div id="ms-profile-section" style="display:none;">
+            <h2 style="font-size:13px; color: var(--accent); margin-top: 18px;">👤 Session Profile (Microsoft)</h2>
+            <div style="display:flex; gap:16px; align-items:flex-start; margin-top:8px;">
+                <canvas id="skin-head-canvas" width="96" height="96" style="background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px;"></canvas>
+                <div style="flex:1;">
+                    <div id="ms-profile-name" style="font-weight:bold; font-size:13px;">—</div>
+                    <div id="ms-profile-variant" style="font-size:11px; color: var(--text-muted); margin-top:2px;"></div>
+                    <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+                        <button class="btn-secondary" id="change-skin-btn" style="font-size:11px;">🎨 Change Skin</button>
+                        <button class="btn-secondary" id="refresh-ms-session-btn" style="font-size:11px;">🔁 Refresh Session</button>
+                    </div>
+                    <div id="ms-profile-status" style="font-size:10px; color: var(--text-muted); margin-top:6px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row" style="margin-top:14px;">
             <label>Custom Skin (.png)</label>
             <button class="btn-secondary" id="select-skin-btn">Upload Custom Skin</button>
             <div id="skin-path-display" style="font-size: 10px; color: var(--text-muted); margin-top: 4px; word-break: break-all;">No skin uploaded</div>
@@ -745,16 +897,80 @@
         <button class="close-btn" onclick="closeAllModals()">Save Account Settings</button>
     </div>
 
-    <!-- Theme Store Modal -->
-    <div class="modal" id="theme-modal">
-        <h3 class="modal-title">Theme Store</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Select a color scheme to customize devLauncher's appearance.</p>
+    <!-- Theme Store & Customizer Modal -->
+    <div class="modal" id="theme-modal" style="max-height: 85vh; overflow-y: auto;">
+        <h3 class="modal-title">🎨 Themes & UI Customizer</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Choose a preset theme or customize colors, transparency, and fonts.</p>
 
+        <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px; color: var(--accent);">Preset Themes</div>
         <div class="theme-grid" id="theme-grid-container">
             <!-- Dynamically populated -->
         </div>
 
-        <button class="close-btn" onclick="closeAllModals()">Done</button>
+        <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: var(--accent);">🛠️ Custom Theme Creator</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-row">
+                    <label style="font-size: 11px;">Accent Color</label>
+                    <input type="color" id="theme-custom-accent" value="#2ecc71" style="width: 100%; height: 32px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                </div>
+                <div class="form-row">
+                    <label style="font-size: 11px;">Main Background</label>
+                    <input type="color" id="theme-custom-bgmain" value="#2b2b36" style="width: 100%; height: 32px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                </div>
+                <div class="form-row">
+                    <label style="font-size: 11px;">Dark / Card Background</label>
+                    <input type="color" id="theme-custom-bgdark" value="#1e1e24" style="width: 100%; height: 32px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                </div>
+                <div class="form-row">
+                    <label style="font-size: 11px;">Bar / Header Background</label>
+                    <input type="color" id="theme-custom-bgbar" value="#141419" style="width: 100%; height: 32px; padding: 0; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;">
+                <label style="font-size: 11px;">Window Background Opacity / Transparency (<span id="opacity-val-display">100%</span>)</label>
+                <input type="range" id="theme-custom-opacity" min="0.5" max="1.0" step="0.05" value="1.0" style="width: 100%; accent-color: var(--accent);">
+            </div>
+
+            <div class="form-row">
+                <label style="font-size: 11px;">Custom Font Family</label>
+                <input type="text" id="theme-custom-font" placeholder="e.g. JetBrains Mono, Inter, Roboto, sans-serif" value="JetBrains Mono, monospace" style="width: 100%; padding: 6px; font-family: inherit; font-size: 12px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); border-radius: 4px;">
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="btn-primary" id="apply-custom-theme-btn" style="flex: 1; padding: 8px;">Save & Apply Custom Theme</button>
+                <button class="btn-secondary" id="export-theme-json-btn" style="padding: 8px;">Export .devtheme</button>
+            </div>
+        </div>
+
+        <button class="close-btn" onclick="closeAllModals()" style="margin-top: 15px;">Done</button>
+    </div>
+
+    <!-- Crash Diagnosis Modal -->
+    <div class="modal" id="crash-modal" style="max-width: 550px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 24px;">🚨</span>
+            <h3 class="modal-title" style="margin: 0; color: #ff5555;" id="crash-title">Game Crash Detected!</h3>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="crash-subtitle">
+            devLauncher rule engine analyzed the logs and found the issue:
+        </p>
+
+        <div style="background: var(--bg-dark); border: 1px solid #ff5555; border-radius: 6px; padding: 12px; margin-bottom: 14px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: bold;">Problem / Cause:</div>
+            <div id="crash-cause" style="font-size: 13px; font-weight: 500; margin: 4px 0 8px 0; color: var(--text);">Unknown error</div>
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: bold;">Recommended Solution:</div>
+            <div id="crash-solution" style="font-size: 13px; color: var(--accent); margin-top: 4px;">Check crash reports folder.</div>
+        </div>
+
+        <div id="crash-matched-snippet" style="font-family: monospace; font-size: 11px; background: var(--bg-bar); padding: 8px; border-radius: 4px; border: 1px solid var(--border); max-height: 80px; overflow-y: auto; color: #ffb86c; margin-bottom: 14px; display: none;"></div>
+
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-primary" id="crash-autofix-btn" style="flex: 1; padding: 10px; display: none;">⚡ 1-Click Fix Problem</button>
+            <button class="close-btn" onclick="closeAllModals()" style="flex: 1; padding: 10px; margin-top: 0;">Close</button>
+        </div>
     </div>
 
     <!-- Settings Modal -->
@@ -774,7 +990,21 @@
             <select id="java-select">
                 <option value="">System Default Java</option>
             </select>
-            <button class="btn-secondary" id="detect-java-btn" style="margin-top: 6px;">Auto-Detect Java</button>
+            <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+                <button class="btn-secondary" id="detect-java-btn" style="flex: 1;">Auto-Detect System Java</button>
+            </div>
+        </div>
+
+        <div class="form-row" style="background: var(--bg-dark); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+            <label style="font-weight: bold; color: var(--accent); display: block; margin-bottom: 4px;">⚡ 1-Click Auto Install OpenJDK</label>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Download and setup official OpenJDK binaries automatically:</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="btn-secondary" onclick="autoInstallJava(8)" style="font-size: 11px; padding: 4px 8px;">Java 8</button>
+                <button class="btn-secondary" onclick="autoInstallJava(17)" style="font-size: 11px; padding: 4px 8px;">Java 17</button>
+                <button class="btn-secondary" onclick="autoInstallJava(21)" style="font-size: 11px; padding: 4px 8px;">Java 21</button>
+                <button class="btn-secondary" onclick="autoInstallJava(25)" style="font-size: 11px; padding: 4px 8px;">Java 25</button>
+                <button class="btn-secondary" onclick="autoInstallJava(27)" style="font-size: 11px; padding: 4px 8px; border-color: var(--accent); font-weight: bold;">Java 27 (Next-Gen)</button>
+            </div>
         </div>
 
         <div class="form-row">
@@ -797,9 +1027,63 @@
             <input type="text" id="custom-jvm-args" placeholder="-XX:+UseG1GC ...">
         </div>
 
+        <div class="form-row" style="background: var(--bg-dark); padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin-top: 10px;">
+            <label for="proxy-mode-select" style="font-weight: bold; color: var(--accent);">🛰 Network / Proxy (school & work networks)</label>
+            <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 8px 0;">Most download failures on filtered networks are proxy-related. "System" follows Windows proxy settings; "Custom" lets you enter the school proxy manually.</p>
+            <select id="proxy-mode-select" style="margin-bottom: 8px;">
+                <option value="system">System proxy (recommended)</option>
+                <option value="off">Direct — no proxy</option>
+                <option value="custom">Custom proxy…</option>
+            </select>
+            <input type="text" id="proxy-url-input" placeholder="http://proxy.school.edu.tr:8080" style="margin-bottom: 8px;">
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="proxy-user-input" placeholder="Proxy username (optional)" style="flex: 1;">
+                <input type="password" id="proxy-pass-input" placeholder="Proxy password" style="flex: 1;">
+            </div>
+            <button class="btn-secondary" id="connectivity-test-btn" style="margin-top: 10px; width: 100%;">🛰 Test Connectivity</button>
+            <div id="connectivity-summary" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Tests every server the launcher needs (Mojang, Modrinth, GitHub, Adoptium).</div>
+        </div>
+
         <div class="form-row">
-            <label for="discord-client-id">Discord Application Client ID (Optional)</label>
+            <label for="discord-client-id">Custom Discord RPC Client ID (optional)</label>
             <input type="text" id="discord-client-id" placeholder="1342000000000000000">
+        </div>
+
+        <div class="form-row" style="background: var(--bg-dark); padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin-top: 10px;">
+            <label style="font-weight: bold; color: var(--accent); display: flex; justify-content: space-between;">
+                <span>🧹 Smart Disk & Cache Cleaner</span>
+                <span id="cleaner-status-badge" style="font-size: 11px; color: var(--text-muted);">Ready to scan</span>
+            </label>
+            <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 8px 0;">Safe cleanup: Removes old crash reports, compressed log archives (.log.gz), and temp files without touching worlds or mods.</p>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-secondary" id="scan-garbage-btn" style="flex: 1; font-size: 11px;">🔍 Scan Garbage</button>
+                <button class="btn-primary" id="clean-garbage-btn" style="flex: 1; font-size: 11px; display: none;">🚀 Clean Now (<span id="garbage-mb-display">0 MB</span>)</button>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label for="prefetch-cap">Prefetch asset byte cap (MB, 0 = unlimited)</label>
+            <input type="number" id="prefetch-cap" min="0" max="2048" step="50" placeholder="400">
+        </div>
+
+        <div class="form-row">
+            <label for="font-select">Interface Font (OS-optimized)</label>
+            <select id="font-select"></select>
+            <div style="display:flex; gap:6px; margin-top:6px;">
+                <input type="text" id="font-custom-input" placeholder="Custom CSS font stack (e.g. 'Fira Code', monospace)" style="flex:1;">
+                <button class="btn-secondary" id="font-apply-btn">Apply</button>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-dark); padding: 12px; border-radius: 6px; border: 1px solid var(--border); margin-top: 10px;">
+            <label style="font-weight: bold; color: var(--accent); display: block; margin-bottom: 6px;">ℹ️ About devLauncher</label>
+            <div id="about-info" style="font-size: 11px; color: var(--text-muted); line-height: 1.7;">Loading...</div>
+            <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+                <button class="btn-secondary" id="about-github-btn" style="font-size:11px;">GitHub</button>
+                <button class="btn-secondary" id="about-instagram-btn" style="font-size:11px;">Instagram</button>
+                <button class="btn-secondary" id="about-update-btn" style="font-size:11px;">Check for Updates</button>
+                <button class="btn-secondary" id="about-export-diagnostics-btn" style="font-size:11px;">🧰 Diagnostics Zip</button>
+            </div>
         </div>
 
         <button class="close-btn" onclick="closeAllModals()">Save Settings</button>
@@ -826,12 +1110,208 @@
             <select id="new-instance-loader">
                 <option value="vanilla">Vanilla</option>
                 <option value="fabric">Fabric</option>
+                <option value="quilt">Quilt</option>
+                <option value="neoforge">NeoForge</option>
                 <option value="forge">Forge</option>
+                <option value="optifine">OptiFine HD</option>
+                <option value="optifine-forge">OptiFine + Forge</option>
             </select>
         </div>
 
         <button class="btn-secondary" id="submit-create-instance-btn" style="width: 100%;">Create Instance</button>
         <button class="close-btn" onclick="closeAllModals()">Cancel</button>
+    </div>
+
+    <!-- Remote Play Modal -->
+    <div class="modal" id="remoteplay-modal">
+        <h3 class="modal-title">🖥 Remote Play (Sunshine / Moonlight)</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            devLauncher configures the <strong>Sunshine</strong> streamer on this PC and pairs a Moonlight
+            device PIN. Video itself is streamed entirely by Sunshine/Moonlight — devLauncher only sets it up.
+            Install Sunshine from <a href="#" onclick="require('electron').shell.openExternal('https://github.com/LizardByte/Sunshine/releases')">github.com/LizardByte/Sunshine</a> if not detected.
+        </p>
+        <div id="remote-status" style="font-size: 11px; margin: 10px 0; padding: 8px; border: 1px solid var(--border); border-radius: 6px;"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-secondary" id="remote-refresh-btn">🔄 Re-detect</button>
+            <button class="btn-secondary" id="remote-app-btn">➕ Add devLauncher to Sunshine apps</button>
+            <button class="btn-secondary" id="remote-ui-btn">🌐 Open Sunshine UI</button>
+        </div>
+        <div style="margin-top: 14px;">
+            <label id="remote-pin-label" style="font-size: 11px;">Moonlight PIN (shown on your device screen, 4-10 digits)</label>
+            <div style="display:flex; gap:8px; margin-top:4px;">
+                <input type="text" id="remote-pin-input" placeholder="1234" maxlength="10" style="flex:1;">
+                <button class="btn-primary" id="remote-pin-btn">Pair</button>
+            </div>
+            <div id="remote-pin-result" style="font-size: 10px; color: var(--text-muted); margin-top: 4px;"></div>
+        </div>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- Share Code Modal -->
+    <div class="modal" id="sharecode-modal">
+        <h3 class="modal-title">🔗 Share Code</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            A share code lists your instance (version + loader) and every Modrinth mod inside it.
+            The receiver's devLauncher re-downloads all mods with sha1 verification. Non-Modrinth jars are skipped.
+        </p>
+        <div style="font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--accent);">Generate — from the active instance</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn-secondary" id="share-code-generate-btn">🔗 Generate for Active Instance</button>
+            <button class="btn-secondary" id="share-code-copy-btn" style="display:none;">📋 Copy</button>
+        </div>
+        <div id="share-code-generate-status" style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"></div>
+        <textarea id="share-code-output" readonly style="width: 100%; margin-top: 6px; height: 74px; font-size: 10px; background: var(--bg-bar); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 6px;"></textarea>
+
+        <div style="font-size: 12px; font-weight: bold; margin: 14px 0 6px 0; border-top: 1px solid var(--border); padding-top: 12px; color: var(--accent);">Import — create an instance from a code</div>
+        <textarea id="share-code-input" placeholder="Paste a devLauncher share code (DL13-...)" style="width: 100%; height: 70px; font-size: 10px; background: var(--bg-bar); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 6px;"></textarea>
+        <div style="display:flex; gap:8px; margin-top:6px;">
+            <button class="btn-primary" id="share-code-import-btn">📥 Import Share Code</button>
+        </div>
+        <div id="share-code-import-status" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- World Preview Modal -->
+    <div class="modal" id="worldpreview-modal">
+        <h3 class="modal-title" id="worldpreview-title">🗺 World Preview</h3>
+        <canvas id="worldpreview-canvas" width="256" height="256" style="width: 256px; height: 256px; image-rendering: pixelated; border: 1px solid var(--border); border-radius: 6px; background: #0a0a12;"></canvas>
+        <div id="worldpreview-stats" style="font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.6;"></div>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 6px;">Stylized heightmap of the spawn chunk (16x16 blocks, straight from the world's region file). Water/terrain shade is relative height, not biome-accurate.</p>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- 1-Click Server Modal -->
+    <div class="modal" id="server-modal">
+        <h3 class="modal-title">🖧 1-Click Server</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Builds a runnable dedicated server folder from the <strong id="server-instance-name">active instance</strong>:
+            server jar, copies the mods folder, writes eula.txt (you accept the Minecraft EULA for that server)
+            and start.sh / start.bat. Forge/NeoForge/Quilt need their official installer — you'll get clear guidance.
+        </p>
+        <div id="server-progress" style="font-size: 11px; color: var(--text-muted); margin: 8px 0;"></div>
+        <div id="server-result" style="font-size: 11px; margin: 8px 0; line-height: 1.6;"></div>
+        <button class="btn-primary" id="server-create-btn">🚀 Create Server From Active Instance</button>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- First-Run Wizard Modal -->
+    <div class="modal" id="firstrun-modal" style="max-width: 480px;">
+        <h3 class="modal-title">👋 Welcome to devLauncher</h3>
+        <div id="firstrun-step1">
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Three quick steps. Only step 1 is required.</p>
+            <div class="form-row">
+                <label for="firstrun-username">Your in-game username (offline / single player)</label>
+                <input type="text" id="firstrun-username" placeholder="Player" maxlength="16">
+            </div>
+            <div class="form-row">
+                <label for="firstrun-memory">Maximum RAM</label>
+                <select id="firstrun-memory">
+                    <option>2G</option><option selected>4G</option><option>6G</option><option>8G</option><option>12G</option>
+                </select>
+            </div>
+        </div>
+        <div id="firstrun-step2" style="display:none;">
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Found installations from other launchers — pick what to import:</p>
+            <div id="firstrun-scan-list" style="display:flex; flex-direction:column; gap:6px; max-height: 180px; overflow-y:auto; font-size: 12px;"></div>
+        </div>
+        <div id="firstrun-step3" style="display:none;">
+            <p style="font-size: 13px; margin: 8px 0;">✅ Setup complete. Tips:</p>
+            <ul style="font-size: 11.5px; color: var(--text-muted); line-height: 1.8; padding-left: 18px;">
+                <li>Create instances → <strong>+ Create New Instance</strong> (version + loader)</li>
+                <li>Mods on the <strong>Mod Manager</strong> tab, worlds under <strong>🗺️ Worlds</strong></li>
+                <li>⚡ <strong>1-Click Performance Pack</strong> for FPS, <strong>⏱ Time Machine</strong> for undo</li>
+            </ul>
+        </div>
+        <div style="display:flex; gap:8px; margin-top: 14px;">
+            <button class="btn-primary" id="firstrun-next-btn" style="flex:1;">Continue</button>
+            <button class="btn-secondary" id="firstrun-skip-btn">Skip</button>
+        </div>
+    </div>
+
+    <!-- Mod Doctor Modal -->
+    <div class="modal" id="moddoctor-modal">
+        <h3 class="modal-title">🩺 Mod Doctor</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Static health check of this instance's mods: jar readability, duplicate ids, loader mismatches, missing dependencies and unusual jar properties.
+            The doctor is a second opinion — every Modrinth download is already sha1-verified at install time.
+        </p>
+        <div id="moddoctor-summary" style="display:flex;gap:8px;margin:10px 0;font-size:11px;"></div>
+        <div style="font-size: 11px; color: #f1c40f; background: rgba(241,196,15,0.08); border: 1px solid rgba(241,196,15,0.35); border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;">
+            ⚠ Intel UHD 620 / 600-series iGPU note: OpenGL drivers on 8th-gen Intel iGPUs can crash Minecraft 1.20.5+ (newer GL requirements). Use ZGC off + Java 17/21 for those versions, or run on a machine with a discrete GPU.
+        </div>
+        <div id="moddoctor-results" style="max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+            <div style="color: var(--text-muted); font-size: 12px;">Scanning...</div>
+        </div>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- Mod Time Machine Modal -->
+    <div class="modal" id="timemachine-modal">        <h3 class="modal-title">⏱ Mod Time Machine</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Every install, update, removal and toggle on this instance is recorded here. Roll back any change with one click — deleted mods are kept in the local content store until you clean it.
+        </p>
+        <div style="font-size: 10px; color: var(--text-muted); margin: 6px 0 10px;">Content store: <span id="timemachine-store-size">—</span></div>
+        <div id="timemachine-list" style="max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+            <div style="color: var(--text-muted); font-size: 12px;">Loading history...</div>
+        </div>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- Instance Snapshot Modal -->
+    <div class="modal" id="rename-modal">
+        <h3 class="modal-title">Rename Instance</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">The display name changes — the instance id, its mods and saves stay exactly the same.</p>
+        <input type="text" id="rename-input" maxlength="60" placeholder="New instance name" style="width: 100%;">
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button class="btn-primary" id="rename-save-btn" style="flex: 1;">Save</button>
+            <button class="close-btn" onclick="closeAllModals()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal" id="snapshot-modal">
+        <h3 class="modal-title">⏪ Instance Snapshots</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Capture your active instance's mods, config files and options.txt. Restoring is a true rollback and always keeps an automatic pre-restore snapshot so you can go back.
+        </p>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="snapshot-label-input" placeholder="Snapshot label (e.g. before big modpack)" style="flex: 1; padding: 9px 10px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 12px;">
+            <button class="btn-primary" id="snapshot-create-btn">💾 Create</button>
+        </div>
+        <div id="snapshot-list" style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+            <div style="color: var(--text-muted); font-size: 12px;">No snapshots yet.</div>
+        </div>
+        <button class="close-btn" onclick="closeAllModals()">Close</button>
+    </div>
+
+    <!-- Integrity Sweep Modal -->
+    <div class="modal" id="integrity-modal">
+        <h3 class="modal-title">🛡 Integrity Sweep</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Verify every library of a downloaded version against the checksums in its version JSON, and redownload any missing or corrupted jar with one click.
+        </p>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; align-items: center;">
+            <select id="integrity-version-select" style="flex: 1; padding: 9px 10px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 12px;"></select>
+            <button class="btn-primary" id="integrity-scan-btn">Verify</button>
+        </div>
+        <div id="integrity-results" style="max-height: 300px; overflow-y: auto; font-size: 12px;"></div>
+        <button class="btn-primary" id="integrity-repair-btn" style="display: none; margin-top: 10px; width: 100%;">Repair selected problems</button>
+        <button class="close-btn" onclick="closeAllModals()" style="margin-top: 10px;">Close</button>
+    </div>
+
+    <!-- Import Wizard Modal -->
+    <div class="modal" id="import-modal">        <h3 class="modal-title">🔄 Import from other launchers</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+            Detected instances from Prism, MultiMC, and the vanilla launcher (also works for TLauncher .minecraft folders).
+            Select what you want to bring over — saves, mods, configs, resource/shader packs and custom version profiles are all copied.
+        </p>
+        <div id="import-items-list" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 12px 0;">
+            <div style="color: var(--text-muted); font-size: 12px;">Scanning...</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-primary" id="import-run-btn" style="flex: 1;">Import Selected</button>
+            <button class="close-btn" onclick="closeAllModals()">Cancel</button>
+        </div>
+        <div id="import-results" style="margin-top: 10px; font-size: 12px; color: var(--text-muted);"></div>
     </div>
 
     <!-- Bottom Bar Controls -->
@@ -858,6 +1338,17 @@
         </div>
 
         <button class="play-btn" id="play-btn">PLAY</button>
+        <button class="btn-secondary" id="safe-launch-btn" style="margin-top: 8px; width: 100%; font-size: 11px;" title="Launch with mods temporarily disabled — useful when a mod breaks the game">🛡 Safe Mode (mods off)</button>
+
+        <div id="update-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: rgba(46, 204, 113, 0.15); border: 1px solid var(--accent); color: var(--accent); cursor: pointer; white-space: nowrap;" title="Downloaded update — click to install and restart">
+            ⬆️ <span id="update-badge-text">Update ready</span>
+        </div>
+        <div id="update-progress-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;">
+            ⬇️ <span id="update-progress-text">Checking...</span>
+        </div>
+        <div id="prefetch-chip" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;" title="Pre-downloading libraries & assets so your next PLAY starts faster">
+            ⏬ <span id="prefetch-text">Prefetch</span>
+        </div>
 
         <div class="right-icons">
             <button class="icon-btn" id="refresh-btn" title="Refresh Versions">

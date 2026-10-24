@@ -120,15 +120,53 @@ class ThemeStore {
             text: '#eceff4',
             textMuted: '#d8dee9',
             border: '#434c5e'
+        },
+        'rose-pine': {
+            name: 'Rosé Pine',
+            bgMain: '#1f1d2e',
+            bgDark: '#191724',
+            bgBar: '#26233a',
+            accent: '#c4a7e7',
+            accentHover: '#ebbcba',
+            text: '#e0def4',
+            textMuted: '#908caa',
+            border: '#403d52'
         }
     };
 
+    static customTheme = null;
+
     static getTheme(themeKey) {
+        if (themeKey === 'custom' && this.customTheme) {
+            return this.customTheme;
+        }
         return this.themes[themeKey] || this.themes.dark;
     }
 
+    static setCustomTheme(themeData) {
+        this.customTheme = {
+            name: 'Custom Theme',
+            bgMain: themeData.bgMain || '#2b2b36',
+            bgDark: themeData.bgDark || '#1e1e24',
+            bgBar: themeData.bgBar || '#141419',
+            accent: themeData.accent || '#2ecc71',
+            accentHover: themeData.accentHover || '#34d076',
+            text: themeData.text || '#ffffff',
+            textMuted: themeData.textMuted || '#a0a0b0',
+            border: themeData.border || '#3a3a4a',
+            fontFamily: themeData.fontFamily || 'Segoe UI, system-ui, sans-serif',
+            opacity: typeof themeData.opacity === 'number' ? themeData.opacity : 1.0,
+            customCss: themeData.customCss || ''
+        };
+        return this.customTheme;
+    }
+
     static getAllThemes() {
-        return this.themes;
+        const all = { ...this.themes };
+        if (this.customTheme) {
+            all['custom'] = this.customTheme;
+        }
+        return all;
     }
 }
 
