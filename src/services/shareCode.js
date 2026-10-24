@@ -75,7 +75,7 @@ class ShareCode {
     /** Simple https text fetch (kept injectable for tests via override). */
     static fetchText(url, timeoutMs = 8000) {
         return new Promise((resolve) => {
-            const req = https.get(url, { headers: { 'User-Agent': 'devLauncher/0.13.0' }, timeout: timeoutMs }, (res) => {
+            const req = https.get(url, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` }, timeout: timeoutMs }, (res) => {
                 let data = '';
                 res.on('data', c => { data += c; });
                 res.on('end', () => resolve({ status: res.statusCode, data }));

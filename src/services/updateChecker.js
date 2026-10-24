@@ -11,7 +11,7 @@ const crypto = require('crypto');
 // every step degrades gracefully to "unknown" instead of throwing.
 
 const API = 'https://api.modrinth.com/v2';
-const UA = 'devLauncher/0.13.0 (Minecraft launcher)';
+const UA = `devLauncher/${require('../../package.json').version} (Minecraft launcher)`;
 
 class UpdateChecker {
     static fetchJson(url, timeoutMs = 8000) {

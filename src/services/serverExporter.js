@@ -25,7 +25,7 @@ class ServerExporter {
 
     static fetchText(url, timeoutMs = 15000) {
         return new Promise((resolve) => {
-            const req = https.get(url, { headers: { 'User-Agent': 'devLauncher/0.13.0' }, timeout: timeoutMs }, (res) => {
+            const req = https.get(url, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` }, timeout: timeoutMs }, (res) => {
                 if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
                     res.resume();
                     return ServerExporter.fetchText(res.headers.location, timeoutMs).then(resolve);
@@ -45,7 +45,7 @@ class ServerExporter {
             const done = (ok, info) => { if (!ok) { try { fs.rmSync(destPath, { force: true }); } catch (_) {} } resolve(ok ? { ok, filePath: destPath } : { ok, error: info }); };
             const request = (target, redirects) => {
                 if (redirects > 5) return done(false, 'too many redirects');
-                const req = https.get(target, { headers: { 'User-Agent': 'devLauncher/0.13.0' }, timeout: timeoutMs }, (res) => {
+                const req = https.get(target, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` }, timeout: timeoutMs }, (res) => {
                     if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
                         res.resume();
                         return request(res.headers.location, redirects + 1);

@@ -2,6 +2,8 @@ const { ipcRenderer, shell } = require('electron');
 const qrcode = require('qrcode');
 
 let currentConfig = {};
+// Single source of truth (package.json) prevents stale version strings in UI.
+const APP_VERSION = require('./package.json').version;
 let isVersionDownloadedLocally = false;
 let currentActiveInstanceId = null;
 let activeModrinthCategory = 'mod';
@@ -145,7 +147,7 @@ function initEventListeners() {
     }
 
     async function openRemotePlay() {
-        ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Configuring Remote Play' });
+        ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Configuring Remote Play' });
         openModal('remoteplay-modal');
         refreshRemoteStatus();
     }
@@ -622,7 +624,7 @@ setTimeout(() => {
 // ── Faz 4 modal openers & buttons ────────────────────────────────────────────
 if (document.getElementById('share-code-btn')) {
     document.getElementById('share-code-btn').addEventListener('click', () => {
-        ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Sharing Instance Code' });
+        ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Sharing Instance Code' });
         openModal('sharecode-modal');
     });
     document.getElementById('share-code-generate-btn').addEventListener('click', () => {
@@ -687,7 +689,7 @@ function switchTab(tabId, btnElement) {
     }
 
     ipcRenderer.send('update-discord-presence', {
-        details: 'devLauncher 2.0',
+        details: `devLauncher ${APP_VERSION}`,
         state: sectionName
     });
 
@@ -741,7 +743,7 @@ function selectModrinthCategory(category, btnElement) {
 
 // Modal Control with Discord Presence Updates
 function openAccountModal() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Configuring Account' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Configuring Account' });
     openModal('account-modal');
     refreshAccountsList();
     loadProfileSkin();
@@ -904,24 +906,24 @@ async function changeSkinFlow() {
 }
 
 function openSettingsModal() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Adjusting Settings' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Adjusting Settings' });
     openModal('settings-modal');
     fillAboutSection();
 }
 
 function openCreateInstanceModal() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Creating Instance' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Creating Instance' });
     openModal('create-instance-modal');
 }
 
 function openThemeModal() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Customizing Theme' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Customizing Theme' });
     ipcRenderer.send('get-themes');
     openModal('theme-modal');
 }
 
 async function openImportModal() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Importing Instances' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Importing Instances' });
     openModal('import-modal');
     document.getElementById('import-results').innerText = '';
     document.getElementById('import-run-btn').disabled = true;
@@ -991,7 +993,7 @@ let lastImportItems = null;
 
 // ── Mod Doctor UI ────────────────────────────────────────────────────────────
 async function openModDoctor() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Running Mod Doctor' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Running Mod Doctor' });
     openModal('moddoctor-modal');
     const resultsEl = document.getElementById('moddoctor-results');
     resultsEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12px;">Scanning jars...</div>';
@@ -1068,7 +1070,7 @@ function renderModDoctorResults(res) {
 
 // ── Mod Time Machine UI ──────────────────────────────────────────────────────
 async function openTimeMachine() {
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Browsing Mod History' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Browsing Mod History' });
     openModal('timemachine-modal');
     await refreshTimeMachine();
 }
@@ -1144,7 +1146,7 @@ function closeAllModals() {
     document.getElementById('modal-overlay').style.display = 'none';
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     currentOpenModalId = null;
-    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'In Launcher Menu' });
+    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'In Launcher Menu' });
 }
 
 // ── Central modal system ─────────────────────────────────────────────────────
@@ -1791,7 +1793,7 @@ ipcRenderer.on('instances-list', (event, instances) => {
                 if (input && openModal('rename-modal')) {
                     renameTargetId = inst.id;
                     input.value = inst.name;
-                    ipcRenderer.send('update-discord-presence', { details: 'devLauncher 2.0', state: 'Renaming Instance' });
+                    ipcRenderer.send('update-discord-presence', { details: `devLauncher ${APP_VERSION}`, state: 'Renaming Instance' });
                 }
             });
         }

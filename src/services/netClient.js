@@ -221,7 +221,7 @@ class ProxyTunnelAgent extends https.Agent {
         if (typeof this.proxyAuth === 'string' && this.proxyAuth.length > 0 && this.proxyAuth.length < 200 && !/[\r\n]/.test(this.proxyAuth)) {
             lines.push(`Proxy-Authorization: Basic ${Buffer.from(this.proxyAuth).toString('base64')}`);
         }
-        lines.push('User-Agent: devLauncher-net/0.13');
+        lines.push(`User-Agent: devLauncher-net/${require('../../package.json').version}`);
         lines.push('', '');
         const socket = net.connect({ host: this.proxyHost, port: this.proxyPort })
             .once('error', (e) => { try { callback(e); } catch (_) {} });

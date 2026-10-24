@@ -33,7 +33,7 @@ class OptimizerService {
         const url = `https://api.modrinth.com/v2/project/${slug}/version?loaders=["${loaderType}"]&game_versions=["${mcVersion}"]`;
         
         return new Promise((resolve, reject) => {
-            const req = https.get(url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } }, (res) => {
+            const req = https.get(url, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` } }, (res) => {
                 let data = '';
                 res.on('data', chunk => data += chunk);
                 res.on('end', () => {

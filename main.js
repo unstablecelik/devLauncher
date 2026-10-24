@@ -29,6 +29,13 @@ const ModDoctor = require('./src/services/modDoctor');
 const ModrinthService = require('./src/services/modrinthService');
 const PrefetchService = require('./src/services/prefetchService');
 const BenchmarkService = require('./src/services/benchmarkService');
+
+/**
+ * Single source of truth for the launcher version. Build tooling, User-Agent
+ * headers and Discord presence all derive from this so no code ever hardcodes
+ * a different number.
+ */
+const { version: APP_VERSION } = require('./package.json');
 const RemotePlayService = require('./src/services/remotePlayService');
 const crypto = require('crypto');
 const netClient = require('./src/services/netClient');
@@ -375,7 +382,7 @@ async function ensureLoaderProfileJson(parsed, minecraftDir) {
         const mcVersion = parsed.number;
         const loaderVersion = parsed.loaderVersion || '0.19.5';
         const url = `https://meta.fabricmc.net/v2/versions/loader/${encodeURIComponent(mcVersion)}/${encodeURIComponent(loaderVersion)}/profile/json`;
-        const response = await fetch(url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } });
+        const response = await fetch(url, { headers: { 'User-Agent': `devLauncher/${APP_VERSION}` } });
         if (!response.ok) {
             throw new Error(`Unable to fetch Fabric profile JSON (HTTP ${response.status})`);
         }
@@ -390,7 +397,7 @@ async function ensureLoaderProfileJson(parsed, minecraftDir) {
         const mcVersion = parsed.number;
         const loaderVersion = parsed.loaderVersion || '0.26.0';
         const url = `https://meta.quiltmc.org/v3/versions/loader/${encodeURIComponent(mcVersion)}/${encodeURIComponent(loaderVersion)}/profile/json`;
-        const response = await fetch(url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } });
+        const response = await fetch(url, { headers: { 'User-Agent': `devLauncher/${APP_VERSION}` } });
         if (response.ok) {
             const profile = await response.json();
             fs.mkdirSync(customDir, { recursive: true });
@@ -420,7 +427,7 @@ function ensureForgeCacheDir() {
 function downloadFileTo(url, targetPath) {
     return new Promise((resolve, reject) => {
         const get = (currentUrl, redirectCount) => {
-            https.get(currentUrl, { headers: { 'User-Agent': 'devLauncher/1.0.0' } }, (res) => {
+            https.get(currentUrl, { headers: { 'User-Agent': `devLauncher/${APP_VERSION}` } }, (res) => {
                 const status = res.statusCode || 0;
                 if (status >= 300 && status < 400 && res.headers.location && redirectCount < 5) {
                     res.resume();
@@ -489,7 +496,7 @@ function neoForgeBuildPrefix(mcVersion) {
 async function resolveLatestNeoForgeBuild(mcVersion) {
     const prefix = neoForgeBuildPrefix(mcVersion);
     const url = 'https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml';
-    const response = await fetch(url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } });
+    const response = await fetch(url, { headers: { 'User-Agent': `devLauncher/${APP_VERSION}` } });
     if (!response.ok) {
         throw new Error(`Unable to query NeoForge builds (HTTP ${response.status})`);
     }
@@ -1887,7 +1894,7 @@ ipcMain.on('search-modrinth-mods', async (event, { query, version, loader, proje
         const url = `https://api.modrinth.com/v2/search?query=${queryParam}&facets=${facetsParam}&limit=20`;
 
         const response = await fetch(url, {
-            headers: { 'User-Agent': 'devLauncher/1.0.0' }
+            headers: { 'User-Agent': `devLauncher/${APP_VERSION}` }
         });
 
         if (!response.ok) {
@@ -1909,7 +1916,7 @@ ipcMain.on('download-modrinth-mod', async (event, { projectId, version, loader, 
 
         const versionsUrl = `https://api.modrinth.com/v2/project/${projectId}/version`;
         const response = await fetch(versionsUrl, {
-            headers: { 'User-Agent': 'devLauncher/1.0.0' }
+            headers: { 'User-Agent': `devLauncher/${APP_VERSION}` }
         });
 
         if (!response.ok) {

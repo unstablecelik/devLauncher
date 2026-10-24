@@ -39,7 +39,7 @@ class SkinService {
     async getProfile(accessToken) {
         if (!accessToken) return { ok: false, error: 'Not signed in with Microsoft' };
         const res = await fetch(PROFILE_URL, {
-            headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'devLauncher/1.0.0' }
+            headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': `devLauncher/${require('../../package.json').version}` }
         });
         if (!res.ok) {
             const hint = res.status === 401 ? ' (access token expired — re-login or refresh)' : '';
@@ -50,7 +50,7 @@ class SkinService {
         let skinDataUrl = null;
         if (skin && skin.url) {
             try {
-                const imgRes = await fetch(skin.url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } });
+                const imgRes = await fetch(skin.url, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` } });
                 if (imgRes.ok) {
                     const buf = Buffer.from(await imgRes.arrayBuffer());
                     if (this.constructor.validateSkinPng(buf).ok) {
@@ -99,7 +99,7 @@ class SkinService {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json',
-                    'User-Agent': 'devLauncher/1.0.0'
+                    'User-Agent': `devLauncher/${require('../../package.json').version}`
                 },
                 body: JSON.stringify(body)
             });

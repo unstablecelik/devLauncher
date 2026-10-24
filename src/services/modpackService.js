@@ -27,7 +27,7 @@ class ModpackService {
         for (const slug of perfModSlugs) {
             try {
                 const url = `https://api.modrinth.com/v2/project/${slug}/version`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'devLauncher/1.0.0' } });
+                const response = await fetch(url, { headers: { 'User-Agent': `devLauncher/${require('../../package.json').version}` } });
 
                 if (response.ok) {
                     const versions = await response.json();
