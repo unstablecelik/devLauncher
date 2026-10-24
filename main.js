@@ -90,10 +90,10 @@ app.on('second-instance', () => {
     }
 });
 
-// ── Safe Mode: park mods aside for one launch, restore afterwards ────────────
-// When a mod breaks the game, the user can still boot the vanilla-equivalent
-// environment. Mods are moved to <gameDir>/mods.safe-mode and restored:
-//   right before the next NORMAL launch, or on app quit — whichever first.
+// ── Safe Mode retirement: restore-only leftovers ────────────────────────────
+// The Safe Mode launch was removed from the UI, but instances may still carry
+// a `mods.safe-mode` folder from earlier runs — restore functions below keep
+// self-healing those (on startup, on normal launch and before quit).
 function restoreModsAfterSafeMode(instanceId) {
     try {
         const gameDir = instanceManager.getInstanceGameDir(instanceId);
@@ -101,35 +101,12 @@ function restoreModsAfterSafeMode(instanceId) {
         const backupDir = path.join(gameDir, 'mods.safe-mode');
         if (fs.existsSync(backupDir) && !fs.existsSync(modsDir)) {
             fs.renameSync(backupDir, modsDir);
-            console.log(`[SafeMode] restored mods for ${instanceId}`);
+            console.log(`[SafeMode] restored parked mods for ${instanceId}`);
         }
     } catch (err) {
         console.error('[SafeMode] restore failed:', err.message);
     }
 }
-
-function disableModsForSafeMode(instanceId) {
-    const gameDir = instanceManager.getInstanceGameDir(instanceId);
-    const modsDir = path.join(gameDir, 'mods');
-    const backupDir = path.join(gameDir, 'mods.safe-mode');
-    if (fs.existsSync(modsDir) && !fs.existsSync(backupDir)) {
-        fs.renameSync(modsDir, backupDir);
-        console.log(`[SafeMode] parked mods of ${instanceId} (they come back after the run)`);
-    }
-}
-
-ipcMain.on('launch-game-safe', async (event, config) => {
-    try {
-        const id = sanitizeInstanceId(config && config.instanceId);
-        disableModsForSafeMode(id);
-        // Reuse the full launch pipeline; the shim routes its progress events
-        // back to the same window that asked for the safe launch.
-        ipcMain.emit('launch-game', { reply: (ch, p) => { try { event.reply(ch, p); } catch (_) {} } }, config);
-    } catch (err) {
-        console.error('[SafeMode] launch failed:', err.message);
-        event.reply('instance-operation-failed', err.message);
-    }
-});
 
 app.on('before-quit', () => {
     // Safety net: nothing may keep mods hidden once the launcher exits.
@@ -657,8 +634,8 @@ app.whenReady().then(() => {
         }
     })();
     applyNetworkProxy(); // honour system/custom proxy before any network traffic
-    // Safe Mode crash recovery: if the launcher previously died while mods
-    // were parked, bring them back before anything else touches the disk.
+    // Legacy Safe Mode leftover recovery: if a previous run died with mods
+    // parked, bring them back before anything else touches the disk.
     try {
         for (const ins of instanceManager.listInstances()) restoreModsAfterSafeMode(ins.id);
     } catch (_) {}
@@ -2051,7 +2028,7 @@ ipcMain.on('launch-game', async (event, config) => {
 
     const activeInstanceId = sanitizeInstanceId(config.instanceId);
     const instanceGameDir = instanceManager.getInstanceGameDir(activeInstanceId);
-    restoreModsAfterSafeMode(activeInstanceId); // a previous Safe Mode run parks mods; normal launch always restores first
+    restoreModsAfterSafeMode(activeInstanceId); // puts back any mods parked by a retired safe-mode run
 
     // Benchmark: anchor the TTFP wall clock at the very start of the launch IPC
     benchmark.start({

@@ -29,7 +29,7 @@ The biggest release yet: 20 new features across four phases, plus three hardenin
 - **Proxy-aware networking** (`netClient`): every download rides either Electron's Chromium stack (honours the system proxy) or a CONNECT-tunnel agent for the classic Node https paths — school / MEB networks with mandatory proxies finally work, including authenticated proxies and a manual proxy override in Settings.
 - **Connectivity Doctor**: one click in Settings probes all 8 required endpoints (Mojang meta/libraries/assets/session, Modrinth API/CDN, Adoptium, GitHub) with 12s timeouts, classifies DNS-blocked vs. timeouts, and the result ships inside the diagnostics zip.
 - **Instances rewritten (v2)**: no hidden "default" instance anymore — ids are `slug-<hash>`, creation needs an explicit name, every lookup is strict, the legacy default is migrated once into a normal deletable instance, and empty-state guides you to create your first one.
-- **Windows polish**: single-instance lock (a second launcher copy just focuses the first), Safe Mode launch (mods parked for one run, auto-restored on next normal launch or exit — crash-proof via startup recovery), 2G RAM pre-selection on ≤8GB machines, and an Intel UHD 620 iGPU OpenGL note in Mod Doctor.
+- **Windows polish**: single-instance lock (a second launcher copy just focuses the first), 2G RAM pre-selection on ≤8GB machines, and an Intel UHD 620 iGPU OpenGL note in Mod Doctor.
 - **Test suite lives in the repo** (`npm test`), so it can never vanish again: instance v2 contract, proxy tunnel round-trips, UI id contract + modal rules, and the service battery.
 
 ## Notes

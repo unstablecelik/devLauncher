@@ -94,13 +94,15 @@
         /* Layout Container */
         .content-container {
             display: flex;
-            height: calc(100vh - 168px);
+            flex: 1;
+            min-height: 0;
             position: relative;
         }
         
         .tab-content {
             display: none;
-            width: 80%;
+            flex: 1;
+            min-width: 0;
             height: 100%;
             background-color: var(--bg-main);
             padding: 30px 35px;
@@ -131,7 +133,8 @@
         }
 
         .side-panel {
-            width: 20%;
+            width: 260px;
+            flex-shrink: 0;
             height: 100%;
             background-color: var(--bg-dark);
             display: flex;
@@ -141,6 +144,7 @@
             padding: 25px 15px 0 15px;
             border-left: 2px solid var(--border);
             gap: 14px;
+            overflow-y: auto;
         }
 
         .github-btn {
@@ -201,25 +205,26 @@
         
         /* Bottom Control Bar */
         .bottom-bar { 
-            position: absolute;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            height: 120px; 
+            min-height: 108px;
             background-color: var(--bg-bar);
             background-image: url('assets/banner/banner.png');
             background-repeat: repeat-x;
             background-size: auto 100%;
             display: flex; 
+            flex-wrap: wrap;
             align-items: center; 
             justify-content: space-between;
-            padding: 0 35px; 
+            padding: 12px 35px; 
+            gap: 14px;
             z-index: 5;
             border-top: 2px solid var(--border);
         }
 
         .left-controls {
             display: flex;
+            flex-wrap: wrap;
+            row-gap: 10px;
             gap: 18px;
             align-items: center;
         }
@@ -556,6 +561,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            row-gap: 10px;
+        }
+
+        .mod-info {
+            min-width: 0;
+            word-break: break-word;
         }
 
         .mod-info h4 {
@@ -608,6 +620,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            row-gap: 10px;
         }
 
         .theme-grid {
@@ -643,6 +657,27 @@
             background: rgba(0,0,0,0.6);
             z-index: 25;
         }
+
+        /* Window resize safety nets */
+        .right-icons {
+            flex-wrap: wrap;
+            row-gap: 8px;
+        }
+
+        @media (max-width: 1100px) {
+            .side-panel { width: 210px; }
+            .tab-content { padding: 24px 22px; }
+            .bottom-bar { padding: 12px 20px; }
+        }
+
+        @media (max-width: 860px) {
+            .side-panel { display: none; }
+            .tab-content { padding: 20px 16px; }
+            .bottom-bar { padding: 10px 12px; }
+            .account-btn-trigger, .select-wrapper select { width: 140px; }
+            .play-btn { width: 170px; height: 46px; font-size: 15px; }
+            .nav-tab { padding: 7px 10px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
@@ -668,9 +703,6 @@
         <!-- Dashboard Tab -->
         <div class="tab-content active" id="dashboard-tab">
             <h1>devLauncher - the launcher you need</h1>
-            <p>
-                devLauncher
-            </p>
 
             <h2>devLauncher Feature Stack</h2>
             <p>
@@ -1345,7 +1377,6 @@
         </div>
 
         <button class="play-btn" id="play-btn">PLAY</button>
-        <button class="btn-secondary" id="safe-launch-btn" style="margin-top: 8px; width: 100%; font-size: 11px;" title="Launch with mods temporarily disabled — useful when a mod breaks the game">🛡 Safe Mode (mods off)</button>
 
         <div id="update-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: rgba(46, 204, 113, 0.15); border: 1px solid var(--accent); color: var(--accent); cursor: pointer; white-space: nowrap;" title="Downloaded update — click to install and restart">
             ⬆️ <span id="update-badge-text">Update ready</span>

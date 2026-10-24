@@ -35,8 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initEventListeners() {
-    document.getElementById('play-btn').addEventListener('click', () => handleLaunch(false));
-    document.getElementById('safe-launch-btn') && document.getElementById('safe-launch-btn').addEventListener('click', () => handleLaunch(true));
+    document.getElementById('play-btn').addEventListener('click', () => handleLaunch());
     document.getElementById('github-link').addEventListener('click', () => {
         shell.openExternal('https://github.com/unstablecelik/devLauncher');
     });
@@ -1764,12 +1763,12 @@ ipcRenderer.on('instances-list', (event, instances) => {
         }
 
         item.innerHTML = `
-            <div>
+            <div style="min-width: 0; word-break: break-word;">
                 <strong style="color: var(--text);">${escapeHtml(inst.name)}</strong>
                 <div style="font-size: 11px; color: var(--text-muted);">Version: ${escapeHtml(inst.version)} (${escapeHtml(inst.loaderType)})</div>
                 <div style="font-size: 10px; color: var(--accent); margin-top: 2px;">⏱ Played: ${inst.playtimeHours ? inst.playtimeHours + ' h' : '0 h'}</div>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
                 <button class="btn-secondary select-instance-btn">${inst.id === currentActiveInstanceId ? 'Active' : 'Select'}</button>
                 <button class="btn-secondary rename-instance-btn" style="padding: 6px 10px; margin-top: 0; font-size: 11px;">Rename</button>
                 <button class="btn-secondary duplicate-instance-btn" style="padding: 6px 10px; margin-top: 0; font-size: 11px;">Clone</button>
@@ -1893,7 +1892,7 @@ document.getElementById('rename-save-btn') && document.getElementById('rename-sa
 // Game Launching logic & Button behavior fix
 let launchPhaseLabel = 'LOADING'; // Captured at launch time, used by progress handler
 
-function handleLaunch(safeMode = false) {
+function handleLaunch() {
     // v2: no implicit default instance - launch requires an explicit active one.
     if (!currentActiveInstanceId) {
         alert('No instance selected. Create an instance first (Instances tab) — every instance keeps its own mods, saves and settings.');
@@ -1915,7 +1914,7 @@ function handleLaunch(safeMode = false) {
         instanceId: currentActiveInstanceId
     };
 
-    ipcRenderer.send(safeMode ? 'launch-game-safe' : 'launch-game', config);
+    ipcRenderer.send('launch-game', config);
 }
 
 ipcRenderer.on('download-progress', (event, data) => {
