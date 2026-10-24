@@ -39,7 +39,7 @@ Designed for extreme speed, flexibility, and seamless multiplayer experience. Fe
 ### Prerequisites
 
 - [Node.js (v18+)](https://nodejs.org/)
-- [Yarn](https://yarnpkg.com/) or `npm`
+- `npm` (this repo no longer ships a Yarn lockfile)
 
 ### 📦 Build Executables
 
@@ -66,13 +66,15 @@ npm run dist:linux
    ```
 2. Install dependencies:
    ```bash
-   yarn install
-   # or
    npm install
    ```
 3. Launch the app:
    ```bash
    npm start
+   ```
+4. Run the test suite (no network access needed — everything is local):
+   ```bash
+   npm test
    ```
 
 ---
