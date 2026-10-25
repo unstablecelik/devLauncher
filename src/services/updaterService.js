@@ -6,8 +6,9 @@ const { app } = require('electron');
 const {
     compareVersions, stripTag, zipArtifactName, setupArtifactName,
     pickAsset, assetUrl, parseSha256Sums, resolveUpdateMode,
-    buildInnoUpdateArgs, buildPortableUpdateCmd
+    buildInnoUpdateArgs
 } = require('../utils/appUpdate');
+const { runPortableSwap } = require('../utils/portableSwap');
 const { spawn } = require('child_process');
 
 // ── Self-Update service ─────────────────────────────────────────────────────
@@ -20,8 +21,10 @@ const { spawn } = require('child_process');
 //   apply  → installed  : run Setup with /VERYSILENT … and let the Restart
 //                        Manager swap the files and relaunch the launcher
 //            portable  : extract the new zip into `<appdir>/.update-staging`,
-//                        write a bounded wait-and-swap .cmd, quit; the batch
-//                        replaces the app folder on disk and relaunches
+//                        spawn a detached second copy with --apply-update and
+//                        quit; that helper (pure fs swap, no batch/cmd) waits
+//                        for the exe unlock, replaces the app folder entry by
+//                        entry with rollback safety and relaunches
 //
 // Plain https is used intentionally: netClient monkey-patches Node's stack,
 // so this service automatically honours the school/lab proxy settings.
@@ -31,7 +34,6 @@ const REPO_API = 'https://api.github.com/repos/unstablecelik/devLauncher/release
 const EXE_NAME = 'devLauncher.exe';
 const PRODUCT = 'devLauncher';
 const STAGING_DIR = '.update-staging';
-const UPDATE_CMD = 'update.cmd';
 
 class UpdaterService {
     constructor() {
@@ -224,7 +226,7 @@ class UpdaterService {
         this.emit({ status: 'ready', version });
     }
 
-    /** Extract the downloaded zip into the staging dir + write the swap script. */
+    /** Extract the downloaded zip into the staging dir next to the launcher. */
     preparePortableStaging(buf) {
         const stage = this.pending.stagingDir;
         try {
@@ -251,10 +253,6 @@ class UpdaterService {
                 fs.mkdirSync(path.dirname(dest), { recursive: true });
                 fs.writeFileSync(dest, entry.getData());
             }
-            fs.writeFileSync(path.join(this.appDir(), UPDATE_CMD), buildPortableUpdateCmd({
-                exeName: EXE_NAME,
-                stagingDirName: STAGING_DIR
-            }));
         } catch (err) {
             console.error('[Updater] staging failed:', err.message);
             this.emit({ status: 'error', message: `staging failed: ${err.message}` });
@@ -274,9 +272,10 @@ class UpdaterService {
                     try { app.quit(); } catch (_) {}
                 }, 2500);
             } else {
-                const cmd = path.join(this.appDir(), UPDATE_CMD);
-                spawn(process.env.ComSpec || 'cmd.exe', ['/c', cmd], {
-                    detached: true, stdio: 'ignore', windowsHide: true, cwd: this.appDir()
+                // Portable: a detached second copy (no lock, no window) takes
+                // over the swap after this process exits.
+                spawn(app.getPath('exe'), ['--apply-update'], {
+                    detached: true, stdio: 'ignore', windowsHide: true
                 }).unref();
                 setTimeout(() => {
                     try { app.quit(); } catch (_) {}
@@ -287,6 +286,23 @@ class UpdaterService {
             console.error('[Updater] install failed:', err.message);
             this.emit({ status: 'error', message: err.message });
         }
+    }
+
+    /** Detached --apply-update helper: swap staged files in, relaunch. */
+    async applyPortableSwap() {
+        const result = await runPortableSwap({
+            appDir: this.appDir(),
+            exeName: 'devLauncher.exe',
+            relaunch: (exePath) => {
+                spawn(exePath, [], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+            }
+        });
+        if (result && result.ok) {
+            console.log('[Updater] portable swap complete; launcher relaunched');
+        } else {
+            console.error('[Updater] portable swap skipped:', result && result.reason);
+        }
+        return result;
     }
 }
 

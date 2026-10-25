@@ -23,10 +23,29 @@
             box-sizing: border-box;
         }
 
+        /* slim monochrome scrollbars: native gray thickbars clashed with the theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
         body { 
             margin: 0; 
             padding: 0; 
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); 
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace); 
             height: 100vh; 
             display: flex; 
             flex-direction: column;
@@ -76,7 +95,7 @@
             border: 1px solid transparent;
             border-radius: 6px;
             cursor: pointer;
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             transition: all 0.2s ease;
         }
 
@@ -156,7 +175,7 @@
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -255,7 +274,7 @@
             width: 180px;
             background-color: var(--bg-dark);
             color: var(--text);
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             cursor: pointer;
             text-align: left;
             white-space: nowrap;
@@ -276,7 +295,7 @@
             width: 185px; 
             background-color: var(--bg-dark);
             color: var(--text); 
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             transition: border-color 0.2s;
             appearance: none;
             -webkit-appearance: none;
@@ -324,7 +343,7 @@
             color: #ffffff; 
             border-radius: 8px; 
             cursor: pointer; 
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             transition: all 0.2s ease; 
             letter-spacing: 1px;
             display: flex;
@@ -422,7 +441,7 @@
             border: 1px solid var(--border); 
             background: var(--bg-main); 
             color: var(--text); 
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); 
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace); 
             font-size: 13px;
         }
 
@@ -432,7 +451,7 @@
             color: var(--accent);
             padding: 9px 12px;
             border-radius: 6px;
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
@@ -450,7 +469,7 @@
             color: var(--bg-dark);
             padding: 9px 12px;
             border-radius: 6px;
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
@@ -472,7 +491,7 @@
             color: #ffffff;
             padding: 12px;
             border-radius: 6px;
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -497,7 +516,7 @@
             width: 100%; 
             border-radius: 6px; 
             font-weight: 700; 
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
             transition: background-color 0.2s;
             margin-top: 10px;
         }
@@ -520,7 +539,7 @@
             border: 1px solid var(--border);
             background: var(--bg-dark);
             color: var(--text);
-            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace);
+            font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace);
         }
 
         .type-sub-tabs {
@@ -1378,13 +1397,13 @@
 
         <button class="play-btn" id="play-btn">PLAY</button>
 
-        <div id="update-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: rgba(46, 204, 113, 0.15); border: 1px solid var(--accent); color: var(--accent); cursor: pointer; white-space: nowrap;" title="Downloaded update — click to install and restart">
+        <div id="update-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace); padding: 5px 10px; border-radius: 6px; background: rgba(46, 204, 113, 0.15); border: 1px solid var(--accent); color: var(--accent); cursor: pointer; white-space: nowrap;" title="Downloaded update — click to install and restart">
             ⬆️ <span id="update-badge-text">Update ready</span>
         </div>
-        <div id="update-progress-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;">
+        <div id="update-progress-badge" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;">
             ⬇️ <span id="update-progress-text">Checking...</span>
         </div>
-        <div id="prefetch-chip" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;" title="Pre-downloading libraries & assets so your next PLAY starts faster">
+        <div id="prefetch-chip" style="display: none; font-size: 10px; font-family: var(--ui-font, 'Departure Mono', 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace); padding: 5px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap;" title="Pre-downloading libraries & assets so your next PLAY starts faster">
             ⏬ <span id="prefetch-text">Prefetch</span>
         </div>
 

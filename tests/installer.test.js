@@ -42,7 +42,8 @@ check('scripts: inno wine fallback exists', /build:inno:wine/.test(JSON.stringif
 check('updater: electron-updater no longer required', !updaterSrc.includes('electron-updater'));
 check('updater: uses appUpdate helpers', updaterSrc.includes("require('../utils/appUpdate')"));
 check('updater: portable marker support', updaterSrc.includes('portable.marker') || appUpdateSrc.includes('portable.marker'));
-check('updater: portable wait-and-swap cmd', updaterSrc.includes('update.cmd'));
+check('updater: portable relaunch via --apply-update helper', /--apply-update/.test(updaterSrc));
+check('updater: portable swap is shell-free (no batch/cmd)', !/update\.cmd|cmd\.exe|robocopy|ComSpec/.test(updaterSrc) && !appUpdateSrc.includes('buildPortableUpdateCmd'));
 check('updater: inno silent install path', updaterSrc.includes('buildInnoUpdateArgs'));
 check('deps: electron-updater removed from dependencies', !(pkg.dependencies || {}).electron_updater && !(pkg.dependencies || {})['electron-updater']);
 

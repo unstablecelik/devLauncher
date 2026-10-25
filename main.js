@@ -81,7 +81,10 @@ app.on('login', (event, webContents, request, authInfo, callback) => {
 });
 
 // ── Single instance lock (Windows: two launcher windows cause save conflicts) ──
-const gotTheLock = app.requestSingleInstanceLock();
+// The detached `--apply-update` helper copy is exempt: it must outlive the
+// quitting main process to finish the portable swap.
+const applyUpdateHelper = process.argv.includes('--apply-update');
+const gotTheLock = applyUpdateHelper || app.requestSingleInstanceLock();
 app.on('second-instance', () => {
     if (mainWindow) {
         if (mainWindow.isMinimized()) mainWindow.restore();
@@ -595,8 +598,11 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1080,
         height: 680,
-        minWidth: 860,
-        minHeight: 560,
+        minWidth: 940,   // below 1100 the layout stacks; keep the side panel usable
+        minHeight: 600,
+        show: false,     // shown on ready-to-show to avoid the white first paint
+        backgroundColor: '#1e1e24',
+        icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),
         resizable: true,
         frame: true,
         autoHideMenuBar: true,
@@ -607,6 +613,14 @@ function createWindow() {
     });
 
     mainWindow.setMenu(null);
+    mainWindow.once('ready-to-show', () => {
+        try { mainWindow.show(); } catch (_) {}
+    });
+    // safety net: if ready-to-show never fires (e.g. index.html load error), show anyway
+    setTimeout(() => {
+        try { if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show(); }
+        catch (_) {}
+    }, 4000);
 
     const indexPath = path.join(__dirname, 'index.html');
     if (fs.existsSync(indexPath)) {
@@ -619,6 +633,14 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+    // --apply-update: headless portable-swap helper (no window, no lock, no
+    // normal lifecycle). Swaps the staged tree in and relaunches the launcher.
+    if (applyUpdateHelper) {
+        updater.applyPortableSwap().finally(() => {
+            try { app.exit(0); } catch (_) {}
+        });
+        return;
+    }
     if (!gotTheLock) { app.quit(); return; } // a second launcher copy is already running
     // v2: align the saved selection with a REAL instance after legacy
     // migration (the old 'default' id no longer exists as a concept).

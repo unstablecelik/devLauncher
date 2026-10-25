@@ -90,39 +90,6 @@ function buildInnoUpdateArgs(setupPath) {
     return ['/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CLOSEAPPLICATIONS', '/RESTARTAPPLICATIONS'];
 }
 
-/**
- * Batch script for portable (zip) in-place updates. The updater extracts the
- * new zip into `<appdir>/.update-staging`, drops this script next to the exe
- * and quits; the script waits for the exe lock to disappear, mirrors the
- * staging tree over the app directory and relaunches.
- * Bounded to ~90s so a hung process can never loop forever.
- */
-function buildPortableUpdateCmd({ exeName, stagingDirName }) {
-    return [
-        '@echo off',
-        'setlocal',
-        'set ROOT=%~dp0',
-        `set STAGE=%~dp0${stagingDirName}`,
-        'set /a attempts=0',
-        ':waitloop',
-        'tasklist /FI "IMAGENAME eq ' + exeName + '" | find /I "' + exeName + '" >nul',
-        'if not errorlevel 1 (',
-        '  ping -n 2 127.0.0.1 >nul',
-        '  set /a attempts+=1',
-        '  if %attempts% GEQ 90 goto skip',
-        '  goto waitloop',
-        ')',
-        'ping -n 3 127.0.0.1 >nul',
-        `robocopy "%STAGE%" "%ROOT%" /MIR /NFL /NDL /NJH /NJS /NP`,
-        'rmdir /s /q "%STAGE%"',
-        ':skip',
-        `start "" "%ROOT%${exeName}"`,
-        'del /f /q "%~f0"',
-        'exit',
-        ''
-    ].join('\r\n');
-}
-
 module.exports = {
     compareVersions,
     stripTag,
@@ -133,6 +100,5 @@ module.exports = {
     assetUrl,
     parseSha256Sums,
     resolveUpdateMode,
-    buildInnoUpdateArgs,
-    buildPortableUpdateCmd
+    buildInnoUpdateArgs
 };

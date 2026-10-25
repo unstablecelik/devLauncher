@@ -66,13 +66,4 @@ check('inno args: no dialogs', innoArgs.includes('/SUPPRESSMSGBOXES'));
 check('inno args: restart via Restart Manager', innoArgs.includes('/RESTARTAPPLICATIONS'));
 check('inno args: force close lingering', innoArgs.includes('/CLOSEAPPLICATIONS'));
 
-// ── buildPortableUpdateCmd ─────────────────────────────────────────────
-const cmd = A.buildPortableUpdateCmd({ exeName: 'devLauncher.exe', stagingDirName: '.update-staging' });
-check('portable cmd: CRLF script', cmd.includes('\r\n'));
-check('portable cmd: bounded wait loop (90 attempts)', cmd.indexOf('GEQ 90') > -1);
-check('portable cmd: robocopy mirror stage→root', cmd.includes('robocopy "%STAGE%" "%ROOT%" /MIR'));
-check('portable cmd: staging dir referenced', cmd.includes('.update-staging'));
-check('portable cmd: relaunch exe', cmd.includes('start "" "%ROOT%devLauncher.exe"'));
-check('portable cmd: self-cleaning script', cmd.includes('del /f /q "%~f0"'));
-
 finish('app-update');
