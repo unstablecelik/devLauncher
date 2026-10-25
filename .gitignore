@@ -35,7 +35,7 @@ builder-effective-config.yaml
 auth.json
 credentials.json
 
-# ── AI-assist artifacts, local helpers, generated promo ─────────────────────
+# ── Local helper scripts, notes and generated promo ─────────────────────────
 FIXES-REPORT.md
 ROADMAP-REPORT.md
 start.sh
